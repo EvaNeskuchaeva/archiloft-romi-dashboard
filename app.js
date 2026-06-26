@@ -1,48 +1,29 @@
-const STORAGE_KEY = "archiloft-romi-dashboard-v1";
+const STORAGE_KEY = "archiloft-romi-dashboard-v2";
 const MANAGER_OVERRIDES_KEY = "archiloft-manager-overrides-v1";
 
-const seedDeals = [
-  ["2024-05-01", "Instagram / FB", "Свадьбы", "Клочкова Ирина", "event", 42, 62000, 360000, 138000],
-  ["2024-05-03", "Telegram", "Корпоративы", "Дарья Тенькова", "booked", 28, 41000, 270000, 99000],
-  ["2024-05-05", "Яндекс.Директ", "Дни рождения", "Вероника Нам", "event", 31, 52000, 220000, 85000],
-  ["2024-05-08", "Google Ads", "Лекции / Мастер-классы", "Клочкова Ирина", "lead", 22, 33000, 88000, 39000],
-  ["2024-05-09", "2GIS", "Фото / Видео съемки", "Дарья Тенькова", "event", 18, 21000, 120000, 46000],
-  ["2024-05-10", "Avito", "Презентации", "Вероника Нам", "booked", 15, 16000, 90000, 32000],
-  ["2024-05-11", "Event-агентства", "Конференции", "Клочкова Ирина", "event", 25, 34000, 180000, 70000],
-  ["2024-05-12", "Сарафанное радио", "Бизнес-завтраки", "Дарья Тенькова", "event", 12, 4000, 65000, 24000],
-  ["2024-05-16", "Instagram / FB", "Свадьбы", "Вероника Нам", "booked", 36, 54000, 310000, 121000],
-  ["2024-05-17", "Telegram", "Корпоративы", "Клочкова Ирина", "event", 24, 30000, 210000, 77000],
-  ["2024-05-19", "Яндекс.Директ", "Дни рождения", "Дарья Тенькова", "event", 26, 39000, 170000, 63000],
-  ["2024-05-20", "Google Ads", "Лекции / Мастер-классы", "Вероника Нам", "hold", 14, 21000, 56000, 23000],
-  ["2024-05-21", "2GIS", "Фото / Видео съемки", "Клочкова Ирина", "event", 11, 14000, 82000, 31000],
-  ["2024-05-22", "Avito", "Презентации", "Дарья Тенькова", "lead", 10, 12000, 42000, 16000],
-  ["2024-05-24", "Event-агентства", "Конференции", "Вероника Нам", "booked", 19, 27000, 130000, 51000],
-  ["2024-05-26", "Сарафанное радио", "Бизнес-завтраки", "Клочкова Ирина", "event", 8, 2000, 50000, 19000],
-  ["2024-04-04", "Instagram / FB", "Свадьбы", "Дарья Тенькова", "event", 38, 58000, 315000, 119000],
-  ["2024-04-13", "Telegram", "Корпоративы", "Вероника Нам", "event", 21, 29000, 195000, 72000],
-  ["2024-04-18", "Яндекс.Директ", "Дни рождения", "Клочкова Ирина", "event", 23, 36000, 155000, 59000],
-  ["2024-03-08", "Instagram / FB", "Свадьбы", "Дарья Тенькова", "event", 33, 51000, 260000, 104000],
-  ["2024-03-15", "Google Ads", "Корпоративы", "Вероника Нам", "event", 18, 26000, 145000, 58000],
-  ["2024-02-07", "Яндекс.Директ", "Дни рождения", "Клочкова Ирина", "event", 21, 33000, 120000, 51000],
-  ["2024-01-12", "Telegram", "Корпоративы", "Дарья Тенькова", "event", 17, 24000, 112000, 42000],
-  ["2023-12-14", "Instagram / FB", "Свадьбы", "Вероника Нам", "event", 19, 31000, 130000, 48000],
-  ["2023-11-09", "Сарафанное радио", "Бизнес-завтраки", "Клочкова Ирина", "event", 9, 3000, 32000, 12000]
-].map(([date, channel, type, manager, status, leads, marketing, revenue, costs], index) => ({
-  id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${index}`,
-  date,
-  channel,
-  type,
-  manager,
-  status,
-  leads,
-  marketing,
-  revenue,
-  costs
+const financeData = window.ARCHILOFT_FINANCE_DATA || { monthly: [], yearly: [], events: [], event_types: [], ad_lines: [] };
+
+function dateFromPeriod(period) {
+  return `${period}-01`;
+}
+
+const managers = ["Клочкова Ирина", "Вероника Нам", "Дарья Тенькова"];
+
+const seedDeals = financeData.monthly.map((month, index) => ({
+  id: `${month.period}-balance`,
+  date: dateFromPeriod(month.period),
+  channel: "Реклама из баланса",
+  type: "Все мероприятия месяца",
+  manager: managers[index % managers.length],
+  status: "event",
+  leads: month.events_count,
+  marketing: Math.round(month.ad_spend || 0),
+  revenue: Math.round(month.revenue || 0),
+  costs: Math.max(0, Math.round((month.expenses || 0) - (month.ad_spend || 0)))
 }));
 
-const channels = ["Instagram / FB", "Telegram", "Яндекс.Директ", "Google Ads", "2GIS", "Avito", "Event-агентства", "Сарафанное радио"];
-const types = ["Свадьбы", "Корпоративы", "Дни рождения", "Лекции / Мастер-классы", "Фото / Видео съемки", "Презентации", "Конференции", "Бизнес-завтраки"];
-const managers = ["Клочкова Ирина", "Вероника Нам", "Дарья Тенькова"];
+const channels = Array.from(new Set(["Реклама из баланса", ...financeData.ad_lines.map((line) => line.name)])).slice(0, 80);
+const types = Array.from(new Set(["Все мероприятия месяца", ...financeData.events.map((event) => event.type)])).slice(0, 80);
 const statuses = [
   ["lead", "Лид"],
   ["hold", "Просмотр"],
@@ -111,6 +92,31 @@ function filteredDeals() {
   return state.deals.filter(byDateRange);
 }
 
+function activeMonthly() {
+  const from = document.querySelector("#dateFrom").value;
+  const to = document.querySelector("#dateTo").value;
+  return financeData.monthly.filter((month) => {
+    const date = dateFromPeriod(month.period);
+    return (!from || date >= from) && (!to || date <= to);
+  });
+}
+
+function activeEvents() {
+  const from = document.querySelector("#dateFrom").value;
+  const to = document.querySelector("#dateTo").value;
+  return financeData.events.filter((event) => event.date && (!from || event.date >= from) && (!to || event.date <= to));
+}
+
+function activeAdLines() {
+  const periods = new Set(activeMonthly().map((month) => month.period));
+  return financeData.ad_lines.filter((line) => periods.has(line.period));
+}
+
+function activeEventTypes() {
+  const periods = new Set(activeMonthly().map((month) => month.period));
+  return financeData.event_types.filter((row) => periods.has(row.period));
+}
+
 function sum(items, key) {
   return items.reduce((total, item) => total + Number(item[key] || 0), 0);
 }
@@ -146,18 +152,23 @@ function formatMoney(value) {
 }
 
 function setDefaultDates() {
-  document.querySelector("#dateFrom").value = "2024-05-01";
-  document.querySelector("#dateTo").value = "2024-05-31";
+  document.querySelector("#dateFrom").value = "2026-01-01";
+  document.querySelector("#dateTo").value = "2026-05-31";
 }
 
 function applyPreset() {
   const preset = document.querySelector("#periodPreset").value;
+  if (["2024", "2025", "2026"].includes(preset)) {
+    document.querySelector("#dateFrom").value = `${preset}-01-01`;
+    document.querySelector("#dateTo").value = preset === "2026" ? "2026-05-31" : `${preset}-12-31`;
+  }
   if (preset === "month") {
-    setDefaultDates();
+    document.querySelector("#dateFrom").value = "2026-05-01";
+    document.querySelector("#dateTo").value = "2026-05-31";
   }
   if (preset === "quarter") {
-    document.querySelector("#dateFrom").value = "2024-03-01";
-    document.querySelector("#dateTo").value = "2024-05-31";
+    document.querySelector("#dateFrom").value = "2026-03-01";
+    document.querySelector("#dateTo").value = "2026-05-31";
   }
   if (preset === "all") {
     document.querySelector("#dateFrom").value = "";
@@ -167,18 +178,19 @@ function applyPreset() {
 }
 
 function renderKpis(deals) {
-  const revenue = sum(deals, "revenue");
-  const marketing = sum(deals, "marketing");
-  const events = deals.filter((deal) => deal.status === "event").length;
-  const totalProfit = profit(deals);
+  const months = activeMonthly();
+  const revenue = sum(months, "revenue");
+  const marketing = sum(months, "ad_spend");
+  const events = sum(months, "events_count");
+  const totalProfit = sum(months, "profit");
   const avgCheck = events ? revenue / events : 0;
   const items = [
-    ["ROMI", pct(romi(revenue, marketing)), "+48% к апрелю", "↗", "green"],
-    ["Выручка", formatMoney(revenue), "+17% к апрелю", "▣", "violet"],
-    ["Прибыль", formatMoney(totalProfit), "+21% к апрелю", "▥", "green"],
-    ["Расход на маркетинг", formatMoney(marketing), "-8% к апрелю", "⌁", "orange"],
-    ["Мероприятия", number.format(events), "+10% к апрелю", "□", "blue"],
-    ["Средний чек", formatMoney(avgCheck), "+6% к апрелю", "≡", "yellow"]
+    ["ROMI", pct(romi(revenue, marketing)), `${months.length} мес.`, "↗", "green"],
+    ["Выручка", formatMoney(revenue), "по балансам", "▣", "violet"],
+    ["Прибыль", formatMoney(totalProfit), "прибыль/убыток", "▥", totalProfit < 0 ? "red" : "green"],
+    ["Расход на рекламу", formatMoney(marketing), "строка реклама", "⌁", "orange"],
+    ["Мероприятия", number.format(events), "листов мероприятий", "□", "blue"],
+    ["Средний чек", formatMoney(avgCheck), "выручка / события", "≡", "yellow"]
   ];
 
   document.querySelector("#kpis").innerHTML = items.map(([title, value, trend, icon, tone], index) => `
@@ -201,9 +213,8 @@ function sparkline(offset) {
 }
 
 function renderLineChart(deals) {
-  const grouped = groupBy(state.deals, (deal) => deal.date.slice(0, 7));
-  const months = Object.keys(grouped).sort();
-  const values = months.map((month) => romi(sum(grouped[month], "revenue"), sum(grouped[month], "marketing")));
+  const months = financeData.monthly.map((month) => month.period);
+  const values = financeData.monthly.map((month) => romi(month.revenue, month.ad_spend));
   const max = Math.max(400, ...values);
   const width = 640;
   const height = 220;
@@ -216,7 +227,7 @@ function renderLineChart(deals) {
   const poly = points.map((point) => `${point.x},${point.y}`).join(" ");
   const area = `${plot.x},${plot.y + plot.h} ${poly} ${plot.x + plot.w},${plot.y + plot.h}`;
 
-  document.querySelector("#romiHint").textContent = `${deals.length} строк в периоде`;
+  document.querySelector("#romiHint").textContent = `${activeMonthly().length} мес. в периоде`;
   document.querySelector("#romiChart").innerHTML = `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="ROMI по месяцам">
       <defs>
@@ -269,50 +280,60 @@ function renderFunnel(deals) {
 }
 
 function renderChannelRows(deals) {
-  const grouped = groupBy(deals, "channel");
+  const adLines = activeAdLines();
+  const grouped = groupBy(adLines, "name");
+  const totalRevenue = sum(activeMonthly(), "revenue");
+  const totalMarketing = sum(adLines, "amount");
   document.querySelector("#channelRows").innerHTML = Object.entries(grouped)
-    .sort((a, b) => sum(b[1], "revenue") - sum(a[1], "revenue"))
+    .sort((a, b) => sum(b[1], "amount") - sum(a[1], "amount"))
+    .slice(0, 12)
     .map(([channel, rows]) => {
-      const revenue = sum(rows, "revenue");
-      const marketing = sum(rows, "marketing");
+      const marketing = sum(rows, "amount");
+      const revenue = totalMarketing ? totalRevenue * (marketing / totalMarketing) : 0;
       const value = romi(revenue, marketing);
       return `<tr><td>${channel}</td><td>${formatMoney(marketing)}</td><td>${formatMoney(revenue)}</td><td class="${value < 0 ? "negative" : "positive"}">${pct(value)}</td></tr>`;
     }).join("");
 }
 
 function renderEventRows(deals) {
-  const grouped = groupBy(deals, "type");
+  const grouped = groupBy(activeEventTypes(), "type");
   document.querySelector("#eventRows").innerHTML = Object.entries(grouped)
-    .sort((a, b) => sum(b[1], "revenue") - sum(a[1], "revenue"))
+    .sort((a, b) => sum(b[1], "events_count") - sum(a[1], "events_count"))
     .map(([type, rows]) => {
-      const revenue = sum(rows, "revenue");
-      const marketing = sum(rows, "marketing");
-      return `<tr><td>${type}</td><td>${rows.length}</td><td>${formatMoney(revenue)}</td><td class="positive">${pct(romi(revenue, marketing))}</td></tr>`;
+      const revenue = sum(rows, "rent_revenue");
+      const totalProfit = sum(rows, "total_profit");
+      return `<tr><td>${type}</td><td>${number.format(sum(rows, "events_count"))}</td><td>${formatMoney(revenue)}</td><td class="${totalProfit < 0 ? "negative" : "positive"}">${formatMoney(totalProfit)}</td></tr>`;
     }).join("");
 }
 
 function renderCalendar(deals) {
-  const bookedDates = new Set(deals.filter((deal) => deal.status === "event").map((deal) => deal.date));
-  const holdDates = new Set(deals.filter((deal) => deal.status === "booked").map((deal) => deal.date));
-  const days = Array.from({ length: 31 }, (_, index) => {
+  const events = activeEvents();
+  const bookedDates = new Set(events.map((event) => event.date));
+  const calendarMonth = (document.querySelector("#dateFrom").value || events[0]?.date || "2026-05-01").slice(0, 7);
+  const [year, month] = calendarMonth.split("-").map(Number);
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const days = Array.from({ length: daysInMonth }, (_, index) => {
     const day = index + 1;
-    const iso = `2024-05-${String(day).padStart(2, "0")}`;
-    const cls = bookedDates.has(iso) ? "booked" : holdDates.has(iso) ? "hold" : "";
+    const iso = `${calendarMonth}-${String(day).padStart(2, "0")}`;
+    const cls = bookedDates.has(iso) ? "booked" : "";
     return `<div class="day ${cls}">${day}</div>`;
   });
-  const occupancy = Math.round((bookedDates.size / 31) * 100);
+  const occupancy = Math.round(([...bookedDates].filter((date) => date.startsWith(calendarMonth)).length / daysInMonth) * 100);
   document.querySelector("#calendarGrid").innerHTML = days.join("");
-  document.querySelector("#occupancyLabel").textContent = `Занятость ${occupancy}%`;
+  document.querySelector("#occupancyLabel").textContent = `${calendarMonth} · Занятость ${occupancy}%`;
 }
 
 function renderCac(deals) {
+  const months = activeMonthly();
+  const eventCount = sum(months, "events_count") || 1;
+  const marketing = sum(months, "ad_spend");
+  const leads = eventCount * 8;
   const stages = [
-    ["Лид", sum(deals, "leads") || 1, "marketing"],
-    ["Просмотр площадки", deals.filter((deal) => ["hold", "booked", "event"].includes(deal.status)).length || 1, "marketing"],
-    ["Бронь", deals.filter((deal) => ["booked", "event"].includes(deal.status)).length || 1, "marketing"],
-    ["Мероприятие", deals.filter((deal) => deal.status === "event").length || 1, "marketing"]
+    ["Лид", leads],
+    ["Просмотр площадки", Math.max(1, Math.round(eventCount * 2.5))],
+    ["Бронь", Math.max(1, Math.round(eventCount * 1.25))],
+    ["Мероприятие", eventCount]
   ];
-  const marketing = sum(deals, "marketing");
   document.querySelector("#cacList").innerHTML = stages.map(([label, count], index) => `
     <div class="metric-row">
       <span>${label}</span>
@@ -347,45 +368,45 @@ function renderManagers(deals) {
 }
 
 function renderFinance(deals) {
-  const revenue = sum(deals, "revenue");
-  const marketing = sum(deals, "marketing");
-  const costs = sum(deals, "costs");
-  const totalProfit = revenue - marketing - costs;
+  const months = activeMonthly();
+  const revenue = sum(months, "revenue");
+  const marketing = sum(months, "ad_spend");
+  const expenses = sum(months, "expenses");
+  const totalProfit = sum(months, "profit");
   const percent = revenue ? Math.max(0, Math.min(100, (totalProfit / revenue) * 100)) : 0;
   document.querySelector("#profitDonut").style.background = `conic-gradient(var(--violet) ${percent}%, #edf0f6 0)`;
   document.querySelector("#profitDonut").innerHTML = `<div class="donut-label">Прибыль<b>${formatMoney(totalProfit)}</b>${pct(percent)}</div>`;
   document.querySelector("#financeRows").innerHTML = [
     ["Выручка", revenue],
     ["Реклама", -marketing],
-    ["Комиссии и подрядчики", -Math.round(costs * 0.38)],
-    ["Персонал", -Math.round(costs * 0.27)],
-    ["Уборка и сервис", -Math.round(costs * 0.18)],
-    ["Прочие расходы", -Math.round(costs * 0.17)]
+    ["Расходы всего", -expenses],
+    ["Расходы без рекламы", -(expenses - marketing)],
+    ["Прибыль/убыток", totalProfit]
   ].map(([label, value]) => `<div class="finance-row"><span>${label}</span><b>${formatMoney(value)}</b></div>`).join("");
 }
 
 function renderRepeatAndForecast(deals) {
-  const eventCount = deals.filter((deal) => deal.status === "event").length;
-  const revenue = sum(deals, "revenue");
+  const months = activeMonthly();
+  const eventCount = sum(months, "events_count");
+  const revenue = sum(months, "revenue");
   const repeat = Math.round(eventCount * 0.28);
   document.querySelector("#repeatBox").innerHTML = `
-    <div class="repeat-card"><span>Новые клиенты</span><strong>${Math.max(0, eventCount - repeat)}</strong><small>ROMI: ${pct(romi(revenue * 0.72, sum(deals, "marketing") * 0.8))}</small></div>
+    <div class="repeat-card"><span>Новые клиенты</span><strong>${Math.max(0, eventCount - repeat)}</strong><small>Расчетная доля</small></div>
     <div class="repeat-card"><span>Повторные клиенты</span><strong>${repeat}</strong><small>LTV: ${formatMoney(revenue / Math.max(1, eventCount) * 1.7)}</small></div>
   `;
 
-  const booked = deals.filter((deal) => deal.status === "booked").length;
-  const leads = sum(deals, "leads");
-  const expectedEvents = Math.round(booked + leads * 0.035);
+  const booked = eventCount;
+  const expectedEvents = Math.round(eventCount * 1.08);
   const expectedRevenue = expectedEvents * (revenue / Math.max(1, eventCount));
   const rows = [
     ["Подтвержденные мероприятия", eventCount, 70],
-    ["Предварительные брони", booked, 48],
-    ["Показы площадки", Math.round(leads * 0.5), 62],
+    ["Расчетный план +8%", expectedEvents, 48],
+    ["Месяцев в выборке", months.length, 62],
     ["Ожидаемая выручка", formatMoney(expectedRevenue), 78]
   ];
   document.querySelector("#forecastBox").innerHTML = rows.map(([label, value, width]) => `
     <div class="forecast-row"><span>${label}</span><div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div><b>${value}</b></div>
-  `).join("") + `<b>До выполнения месячного плана осталось ${Math.max(0, 7 - booked)} мероприятий</b>`;
+  `).join("") + `<b>Прогноз уточняется после подключения календаря и amoCRM</b>`;
 }
 
 function renderEditor() {
