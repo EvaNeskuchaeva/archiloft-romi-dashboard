@@ -213,21 +213,29 @@ function sparkline(offset) {
 }
 
 function renderLineChart(deals) {
-  const months = financeData.monthly.map((month) => month.period);
-  const values = financeData.monthly.map((month) => romi(month.revenue, month.ad_spend));
-  const max = Math.max(400, ...values);
-  const width = 640;
-  const height = 220;
-  const plot = { x: 35, y: 20, w: 570, h: 160 };
+  const months = activeMonthly().sort((a, b) => a.period.localeCompare(b.period));
+  if (!months.length) {
+    document.querySelector("#romiHint").textContent = "Нет данных";
+    document.querySelector("#romiChart").innerHTML = `<div class="empty-chart">Нет данных за выбранный период</div>`;
+    return;
+  }
+  const values = months.map((month) => romi(month.revenue, month.ad_spend));
+  const max = Math.ceil(Math.max(400, ...values) / 500) * 500;
+  const width = 820;
+  const height = 270;
+  const plot = { x: 54, y: 32, w: 710, h: 172 };
+  const labelStep = Math.max(1, Math.ceil(months.length / 12));
+  const pointLabelStep = Math.max(1, Math.ceil(months.length / 8));
   const points = values.map((value, index) => {
     const x = plot.x + (months.length === 1 ? plot.w / 2 : (plot.w / (months.length - 1)) * index);
     const y = plot.y + plot.h - (value / max) * plot.h;
-    return { x, y, value, month: months[index] };
+    return { x, y, value, month: months[index].period };
   });
   const poly = points.map((point) => `${point.x},${point.y}`).join(" ");
   const area = `${plot.x},${plot.y + plot.h} ${poly} ${plot.x + plot.w},${plot.y + plot.h}`;
+  const ticks = Array.from({ length: 5 }, (_, index) => Math.round((max / 4) * index));
 
-  document.querySelector("#romiHint").textContent = `${activeMonthly().length} мес. в периоде`;
+  document.querySelector("#romiHint").textContent = `${months.length} мес. в периоде`;
   document.querySelector("#romiChart").innerHTML = `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="ROMI по месяцам">
       <defs>
@@ -236,14 +244,14 @@ function renderLineChart(deals) {
           <stop offset="1" stop-color="#7257d8" stop-opacity="0"/>
         </linearGradient>
       </defs>
-      ${[0, 100, 200, 300, 400].map((tick) => {
+      ${ticks.map((tick) => {
         const y = plot.y + plot.h - (tick / max) * plot.h;
-        return `<line x1="${plot.x}" x2="${plot.x + plot.w}" y1="${y}" y2="${y}" stroke="#edf0f6"/><text x="0" y="${y + 4}" class="chart-label">${tick}%</text>`;
+        return `<line x1="${plot.x}" x2="${plot.x + plot.w}" y1="${y}" y2="${y}" stroke="#edf0f6"/><text x="8" y="${y + 4}" class="chart-label">${tick}%</text>`;
       }).join("")}
       <polygon points="${area}" fill="url(#lineFill)"/>
       <polyline points="${poly}" fill="none" stroke="#7257d8" stroke-width="3"/>
-      ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#fff" stroke="#7257d8" stroke-width="3"/><text x="${point.x - 16}" y="${point.y - 13}" class="chart-label">${pct(point.value)}</text>`).join("")}
-      ${points.map((point) => `<text x="${point.x - 14}" y="210" class="chart-label">${monthName(point.month)}</text>`).join("")}
+      ${points.map((point, index) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#fff" stroke="#7257d8" stroke-width="3"/>${index % pointLabelStep === 0 || index === points.length - 1 ? `<text x="${point.x}" y="${Math.max(16, point.y - 13)}" text-anchor="middle" class="chart-label value-label">${pct(point.value)}</text>` : ""}`).join("")}
+      ${points.map((point, index) => (index % labelStep === 0 || index === points.length - 1) ? `<text x="${point.x}" y="238" text-anchor="middle" class="chart-label month-label">${monthName(point.month)} ${point.month.slice(2, 4)}</text>` : "").join("")}
     </svg>
   `;
 }
