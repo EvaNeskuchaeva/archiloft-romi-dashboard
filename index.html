@@ -30,8 +30,11 @@
         </div>
         <div class="toolbar">
           <select id="periodPreset" aria-label="Период">
-            <option value="month">Месяц</option>
-            <option value="quarter">Квартал</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="month">Последний месяц</option>
+            <option value="quarter">Последние 3 месяца</option>
             <option value="all">Все данные</option>
           </select>
           <input id="dateFrom" type="date" aria-label="Начало периода" />
@@ -89,7 +92,7 @@
                   <th>Тип</th>
                   <th>События</th>
                   <th>Выручка</th>
-                  <th>ROMI</th>
+                  <th>Прибыль</th>
                 </tr>
               </thead>
               <tbody id="eventRows"></tbody>
@@ -160,7 +163,7 @@
         <div class="studio-head">
           <div>
             <h2>Управление данными</h2>
-            <p>Сделки, расходы, статусы и выручка</p>
+            <p>Финансовые строки из балансов: выручка, реклама, расходы и прибыль</p>
           </div>
           <div class="studio-actions">
             <label class="import-btn">
@@ -192,6 +195,7 @@
       </section>
     </main>
 
+    <script src="data/archiloft-dashboard-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
