@@ -212,7 +212,7 @@ h2 {
 }
 
 .panel.wide {
-  grid-column: span 5;
+  grid-column: span 7;
 }
 
 .panel-head {
@@ -229,7 +229,16 @@ h2 {
 }
 
 .line-chart {
-  height: 220px;
+  height: 270px;
+  min-width: 0;
+}
+
+.empty-chart {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 700;
 }
 
 svg {
@@ -244,7 +253,15 @@ svg {
 
 .chart-label {
   fill: #62687a;
-  font-size: 12px;
+  font-size: 11px;
+}
+
+.value-label {
+  font-weight: 700;
+}
+
+.month-label {
+  fill: #707789;
 }
 
 .funnel {
