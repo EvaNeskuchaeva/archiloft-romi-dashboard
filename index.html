@@ -113,6 +113,26 @@
           <div id="calendarGrid" class="calendar"></div>
         </article>
 
+        <article class="panel wide" data-panel="events">
+          <div class="panel-head">
+            <h2>Загрузка по месяцам и годам</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th>Месяц</th>
+                  <th>Мероприятий</th>
+                  <th>Дней в месяце</th>
+                  <th>Загрузка</th>
+                </tr>
+              </thead>
+              <tbody id="occupancyRows"></tbody>
+            </table>
+          </div>
+        </article>
+
         <article class="panel" data-panel="finance">
           <div class="panel-head">
             <h2>Стоимость привлечения</h2>
@@ -139,8 +159,12 @@
                   <th>Месяц</th>
                   <th>Категория</th>
                   <th>Сделок</th>
-                  <th>Доход</th>
-                  <th>Расход</th>
+                  <th>Продажи</th>
+                  <th>АК</th>
+                  <th>Инвесторы</th>
+                  <th>Ремонт/прочее</th>
+                  <th>Налог</th>
+                  <th>Техспец</th>
                   <th>Чистыми</th>
                 </tr>
               </thead>
@@ -307,7 +331,6 @@
     </main>
 
     <script src="data/archiloft-dashboard-data.js"></script>
-    <script src="data/archiloft-extra-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
