@@ -146,6 +146,22 @@ function activeYears() {
   return Array.from(new Set(activeMonthly().map((month) => month.year))).sort();
 }
 
+function normalizedAmoRows(rows) {
+  const byManager = new Map((rows || []).map((row) => [row.manager, row]));
+  const empty = {
+    clients_total: 0,
+    in_work: 0,
+    closed_lost: 0,
+    success: 0,
+    without_deal: 0,
+    tasks: 0,
+    urgent_call: 0
+  };
+  const requiredRows = managers.map((manager) => ({ manager, ...empty, ...(byManager.get(manager) || {}) }));
+  const otherRows = (rows || []).filter((row) => !managers.includes(row.manager));
+  return [...requiredRows, ...otherRows];
+}
+
 function activeEventTypes() {
   const periods = new Set(activeMonthly().map((month) => month.period));
   return financeData.event_types.filter((row) => periods.has(row.period));
@@ -408,7 +424,7 @@ function renderSalesAndAmo() {
     <p class="muted-note">Google-таблицы по рекламе и продажам добавлены как следующий источник. Для живой загрузки нужен доступ на чтение или экспорт CSV из этих таблиц.</p>
   `;
 
-  const amoRows = financeData.amo_summary || [];
+  const amoRows = normalizedAmoRows(financeData.amo_summary || []);
   document.querySelector("#amoBox").innerHTML = amoRows.length ? `
     <div class="status-line good">База клиентов не загружена в дашборд: показаны только количества по менеджерам и статусам.</div>
     <div class="table-wrap">
