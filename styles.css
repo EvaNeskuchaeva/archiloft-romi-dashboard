@@ -63,6 +63,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  overflow-y: auto;
 }
 
 .brand strong {
@@ -415,6 +416,58 @@ td {
   grid-template-columns: repeat(2, 1fr);
 }
 
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.mini-card {
+  background: #f7f8fc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 78px;
+}
+
+.mini-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.mini-card strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.integration-box {
+  display: grid;
+  gap: 14px;
+}
+
+.status-line {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--violet);
+  border-radius: 8px;
+  background: #f8f7ff;
+  padding: 12px 14px;
+  font-weight: 700;
+}
+
+.status-line.good {
+  border-left-color: var(--green);
+  background: #f4fbf7;
+}
+
+.muted-note {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .repeat-card {
   background: #f7f8fc;
   border: 1px solid var(--line);
@@ -496,6 +549,11 @@ body:not(.view-data) .data-studio {
 body.view-funnel .panel:not([data-panel="funnel"]),
 body.view-channels .panel:not([data-panel="channels"]),
 body.view-events .panel:not([data-panel="events"]),
+body.view-equipment .panel:not([data-panel="equipment"]),
+body.view-advertising .panel:not([data-panel="advertising"]),
+body.view-sales .panel:not([data-panel="sales"]),
+body.view-amo .panel:not([data-panel="amo"]),
+body.view-amortization .panel:not([data-panel="amortization"]),
 body.view-finance .panel:not([data-panel="finance"]) {
   display: none;
 }
@@ -503,8 +561,21 @@ body.view-finance .panel:not([data-panel="finance"]) {
 body.view-funnel .panel,
 body.view-channels .panel,
 body.view-events .panel,
+body.view-equipment .panel,
+body.view-advertising .panel,
+body.view-sales .panel,
+body.view-amo .panel,
+body.view-amortization .panel,
 body.view-finance .panel {
   grid-column: span 6;
+}
+
+body.view-equipment .panel.wide,
+body.view-advertising .panel.wide,
+body.view-sales .panel.wide,
+body.view-amo .panel.wide,
+body.view-amortization .panel.wide {
+  grid-column: span 12;
 }
 
 @media (max-width: 1180px) {
@@ -555,7 +626,21 @@ body.view-finance .panel {
   }
 
   .finance-box,
-  .repeat {
+  .repeat,
+  .summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  body.view-equipment .panel,
+  body.view-advertising .panel,
+  body.view-sales .panel,
+  body.view-amo .panel,
+  body.view-amortization .panel,
+  body.view-equipment .panel.wide,
+  body.view-advertising .panel.wide,
+  body.view-sales .panel.wide,
+  body.view-amo .panel.wide,
+  body.view-amortization .panel.wide {
+    grid-column: auto;
   }
 }
