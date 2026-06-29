@@ -1,7 +1,20 @@
 const STORAGE_KEY = "archiloft-romi-dashboard-v2";
 const MANAGER_OVERRIDES_KEY = "archiloft-manager-overrides-v1";
 
-const financeData = window.ARCHILOFT_FINANCE_DATA || { monthly: [], yearly: [], events: [], event_types: [], ad_lines: [] };
+const financeData = window.ARCHILOFT_FINANCE_DATA || {
+  monthly: [],
+  yearly: [],
+  events: [],
+  event_types: [],
+  ad_lines: [],
+  ad_breakdown: [],
+  ad_by_year: [],
+  equipment_assets: [],
+  equipment_monthly: [],
+  equipment_summary: [],
+  equipment_transactions: [],
+  amortization_yearly: []
+};
 
 function dateFromPeriod(period) {
   return `${period}-01`;
@@ -110,6 +123,20 @@ function activeEvents() {
 function activeAdLines() {
   const periods = new Set(activeMonthly().map((month) => month.period));
   return financeData.ad_lines.filter((line) => periods.has(line.period));
+}
+
+function activeAdBreakdown() {
+  const periods = new Set(activeMonthly().map((month) => month.period));
+  return (financeData.ad_breakdown || []).filter((line) => periods.has(line.period));
+}
+
+function activeEquipmentMonthly() {
+  const periods = new Set(activeMonthly().map((month) => month.period));
+  return (financeData.equipment_monthly || []).filter((row) => periods.has(row.period));
+}
+
+function activeYears() {
+  return Array.from(new Set(activeMonthly().map((month) => month.year))).sort();
 }
 
 function activeEventTypes() {
@@ -288,8 +315,8 @@ function renderFunnel(deals) {
 }
 
 function renderChannelRows(deals) {
-  const adLines = activeAdLines();
-  const grouped = groupBy(adLines, "name");
+  const adLines = activeAdBreakdown();
+  const grouped = groupBy(adLines, "vendor");
   const totalRevenue = sum(activeMonthly(), "revenue");
   const totalMarketing = sum(adLines, "amount");
   document.querySelector("#channelRows").innerHTML = Object.entries(grouped)
@@ -301,6 +328,97 @@ function renderChannelRows(deals) {
       const value = romi(revenue, marketing);
       return `<tr><td>${channel}</td><td>${formatMoney(marketing)}</td><td>${formatMoney(revenue)}</td><td class="${value < 0 ? "negative" : "positive"}">${pct(value)}</td></tr>`;
     }).join("");
+}
+
+function renderEquipment() {
+  const rows = activeEquipmentMonthly();
+  const revenue = sum(rows, "revenue");
+  const expenses = sum(rows, "expenses");
+  const net = sum(rows, "net");
+  const purchase = sum(financeData.equipment_summary || [], "purchase_cost");
+  const remaining = Math.max(0, purchase - sum(financeData.equipment_summary || [], "net"));
+  document.querySelector("#equipmentHint").textContent = `${rows.length} строк за период`;
+  document.querySelector("#equipmentSummary").innerHTML = [
+    ["Закупка техники", purchase],
+    ["Доход за период", revenue],
+    ["Расход за период", expenses],
+    ["Чистыми за период", net],
+    ["Остаток окупаемости", remaining]
+  ].map(([label, value]) => `<div class="mini-card"><span>${label}</span><strong>${formatMoney(value)}</strong></div>`).join("");
+
+  document.querySelector("#equipmentRows").innerHTML = rows.length ? rows
+    .sort((a, b) => a.period.localeCompare(b.period) || a.category.localeCompare(b.category))
+    .map((row) => `
+      <tr>
+        <td>${monthName(row.period)} ${row.year}</td>
+        <td>${row.category}</td>
+        <td>${number.format(row.events_count)}</td>
+        <td>${formatMoney(row.revenue)}</td>
+        <td>${formatMoney(row.expenses)}</td>
+        <td class="${row.net < 0 ? "negative" : "positive"}">${formatMoney(row.net)}</td>
+      </tr>
+    `).join("") : `<tr><td colspan="6">За выбранный период строк по технике нет. Выберите 2024, 2025 или “Все данные”.</td></tr>`;
+}
+
+function renderAdvertising() {
+  const years = new Set(activeYears());
+  const byYear = (financeData.ad_by_year || []).filter((row) => years.size === 0 || years.has(row.year));
+  document.querySelector("#adYearRows").innerHTML = byYear
+    .sort((a, b) => a.year - b.year || b.amount - a.amount)
+    .map((row) => `<tr><td>${row.year}</td><td>${row.vendor}</td><td>${formatMoney(row.amount)}</td></tr>`)
+    .join("");
+
+  const detailRows = activeAdBreakdown()
+    .sort((a, b) => a.period.localeCompare(b.period) || b.amount - a.amount)
+    .slice(0, 120)
+    .map((row) => `
+      <tr>
+        <td>${monthName(row.period)} ${row.year}</td>
+        <td>${row.vendor}</td>
+        <td>${row.name}</td>
+        <td>${formatMoney(row.amount)}</td>
+      </tr>
+    `).join("");
+  document.querySelector("#adDetailRows").innerHTML = detailRows || `<tr><td colspan="4">За выбранный период рекламных платежей нет.</td></tr>`;
+}
+
+function renderSalesAndAmo() {
+  const months = activeMonthly();
+  const events = sum(months, "events_count");
+  const adSpend = sum(months, "ad_spend");
+  const revenue = sum(months, "revenue");
+  document.querySelector("#salesBox").innerHTML = `
+    <div class="status-line good">Рекламные расходы уже стоят в расходах дашборда: ${formatMoney(adSpend)}</div>
+    <div class="summary-grid">
+      <div class="mini-card"><span>Реализовано мероприятий</span><strong>${number.format(events)}</strong></div>
+      <div class="mini-card"><span>Выручка по балансам</span><strong>${formatMoney(revenue)}</strong></div>
+      <div class="mini-card"><span>Средний чек</span><strong>${formatMoney(events ? revenue / events : 0)}</strong></div>
+    </div>
+    <p class="muted-note">Google-таблицы по рекламе и продажам добавлены как следующий источник. Для живой загрузки нужен доступ на чтение или экспорт CSV из этих таблиц.</p>
+  `;
+
+  document.querySelector("#amoBox").innerHTML = `
+    <div class="status-line">amoCRM готов к подключению: ответственный “Юлия” будет автоматически считаться как “Вероника Нам”.</div>
+    <div class="summary-grid">
+      ${managers.map((manager) => `<div class="mini-card"><span>${manager}</span><strong>${number.format((state.managerOverrides[manager]?.leads) || 0)} лидов</strong></div>`).join("")}
+    </div>
+    <p class="muted-note">Чтобы подтянуть источники, суммы, статусы “в работе” и задачи по менеджерам без ручного ввода, нужен экспорт из amoCRM или API-ключ/виджет доступа.</p>
+  `;
+}
+
+function renderAmortization() {
+  document.querySelector("#amortizationRows").innerHTML = (financeData.amortization_yearly || [])
+    .map((row) => `
+      <tr>
+        <td>${row.year}</td>
+        <td>${formatMoney(row.equipment_revenue)}</td>
+        <td>${formatMoney(row.equipment_expenses)}</td>
+        <td class="${row.equipment_net < 0 ? "negative" : "positive"}">${formatMoney(row.equipment_net)}</td>
+        <td>${formatMoney(row.cumulative_net)}</td>
+        <td>${formatMoney(row.payback_remaining)}</td>
+        <td class="${row.available_for_amortization > 0 ? "positive" : ""}">${formatMoney(row.available_for_amortization)}</td>
+      </tr>
+    `).join("");
 }
 
 function renderEventRows(deals) {
@@ -450,6 +568,10 @@ function render(includeEditor = true) {
   renderManagers(deals);
   renderFinance(deals);
   renderRepeatAndForecast(deals);
+  renderEquipment();
+  renderAdvertising();
+  renderSalesAndAmo();
+  renderAmortization();
   if (includeEditor) renderEditor();
 }
 
