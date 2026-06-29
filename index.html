@@ -17,6 +17,11 @@
         <button class="nav-item" data-view="funnel">▽ Воронка</button>
         <button class="nav-item" data-view="channels">◌ Каналы</button>
         <button class="nav-item" data-view="events">▣ Мероприятия</button>
+        <button class="nav-item" data-view="equipment">⌘ Техника</button>
+        <button class="nav-item" data-view="advertising">▤ Реклама</button>
+        <button class="nav-item" data-view="sales">◫ Продажи</button>
+        <button class="nav-item" data-view="amo">◇ amoCRM</button>
+        <button class="nav-item" data-view="amortization">◍ Амортизация</button>
         <button class="nav-item" data-view="finance">₽ Финансы</button>
         <button class="nav-item" data-view="data">✎ Данные</button>
       </nav>
@@ -115,6 +120,112 @@
           <div id="cacList" class="metric-list"></div>
         </article>
 
+        <article class="panel wide" data-panel="equipment">
+          <div class="panel-head">
+            <h2>Техника: окупаемость</h2>
+            <span id="equipmentHint"></span>
+          </div>
+          <div id="equipmentSummary" class="summary-grid"></div>
+        </article>
+
+        <article class="panel wide" data-panel="equipment">
+          <div class="panel-head">
+            <h2>Техника по месяцам</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th>Категория</th>
+                  <th>Сделок</th>
+                  <th>Доход</th>
+                  <th>Расход</th>
+                  <th>Чистыми</th>
+                </tr>
+              </thead>
+              <tbody id="equipmentRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="advertising">
+          <div class="panel-head">
+            <h2>Реклама по статьям расходов</h2>
+            <span>из балансов</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th>Статья</th>
+                  <th>Расход</th>
+                </tr>
+              </thead>
+              <tbody id="adYearRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="advertising">
+          <div class="panel-head">
+            <h2>Точные платежи рекламы</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th>Группа</th>
+                  <th>Название из баланса</th>
+                  <th>Сумма</th>
+                </tr>
+              </thead>
+              <tbody id="adDetailRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="sales">
+          <div class="panel-head">
+            <h2>Продажи и Google-таблицы</h2>
+            <span>готово к загрузке</span>
+          </div>
+          <div id="salesBox" class="integration-box"></div>
+        </article>
+
+        <article class="panel wide" data-panel="amo">
+          <div class="panel-head">
+            <h2>amoCRM: клиенты и задачи</h2>
+            <span>источники и менеджеры</span>
+          </div>
+          <div id="amoBox" class="integration-box"></div>
+        </article>
+
+        <article class="panel wide" data-panel="amortization">
+          <div class="panel-head">
+            <h2>Амортизация 2024-2026</h2>
+            <span>по технике</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th>Доход техники</th>
+                  <th>Расход техники</th>
+                  <th>Чистыми</th>
+                  <th>Накоплено</th>
+                  <th>Остаток окупаемости</th>
+                  <th>Доступно на амортизацию</th>
+                </tr>
+              </thead>
+              <tbody id="amortizationRows"></tbody>
+            </table>
+          </div>
+        </article>
+
         <article class="panel" data-panel="overview">
           <div class="panel-head">
             <h2>Работа менеджеров</h2>
@@ -196,6 +307,7 @@
     </main>
 
     <script src="data/archiloft-dashboard-data.js"></script>
+    <script src="data/archiloft-extra-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
