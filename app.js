@@ -13,7 +13,9 @@ const financeData = window.ARCHILOFT_FINANCE_DATA || {
   equipment_monthly: [],
   equipment_summary: [],
   equipment_transactions: [],
-  amortization_yearly: []
+  amortization_yearly: [],
+  amo_summary: [],
+  amo_note: ""
 };
 
 function dateFromPeriod(period) {
@@ -133,6 +135,11 @@ function activeAdBreakdown() {
 function activeEquipmentMonthly() {
   const periods = new Set(activeMonthly().map((month) => month.period));
   return (financeData.equipment_monthly || []).filter((row) => periods.has(row.period));
+}
+
+function daysInPeriod(period) {
+  const [year, month] = period.split("-").map(Number);
+  return new Date(year, month, 0).getDate();
 }
 
 function activeYears() {
@@ -354,10 +361,14 @@ function renderEquipment() {
         <td>${row.category}</td>
         <td>${number.format(row.events_count)}</td>
         <td>${formatMoney(row.revenue)}</td>
-        <td>${formatMoney(row.expenses)}</td>
+        <td>${formatMoney(row.agency || 0)}</td>
+        <td>${formatMoney(row.investors || 0)}</td>
+        <td>${formatMoney((row.repair || 0) + (row.other_expenses || 0) + (row.manager_bonus || 0))}</td>
+        <td>${formatMoney(row.tax || 0)}</td>
+        <td>${formatMoney(row.tech_specialist || 0)}</td>
         <td class="${row.net < 0 ? "negative" : "positive"}">${formatMoney(row.net)}</td>
       </tr>
-    `).join("") : `<tr><td colspan="6">За выбранный период строк по технике нет. Выберите 2024, 2025 или “Все данные”.</td></tr>`;
+    `).join("") : `<tr><td colspan="10">За выбранный период строк по технике нет. Выберите 2024, 2025 или “Все данные”.</td></tr>`;
 }
 
 function renderAdvertising() {
@@ -397,12 +408,43 @@ function renderSalesAndAmo() {
     <p class="muted-note">Google-таблицы по рекламе и продажам добавлены как следующий источник. Для живой загрузки нужен доступ на чтение или экспорт CSV из этих таблиц.</p>
   `;
 
-  document.querySelector("#amoBox").innerHTML = `
-    <div class="status-line">amoCRM готов к подключению: ответственный “Юлия” будет автоматически считаться как “Вероника Нам”.</div>
-    <div class="summary-grid">
-      ${managers.map((manager) => `<div class="mini-card"><span>${manager}</span><strong>${number.format((state.managerOverrides[manager]?.leads) || 0)} лидов</strong></div>`).join("")}
+  const amoRows = financeData.amo_summary || [];
+  document.querySelector("#amoBox").innerHTML = amoRows.length ? `
+    <div class="status-line good">База клиентов не загружена в дашборд: показаны только количества по менеджерам и статусам.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Менеджер</th>
+            <th>Всего</th>
+            <th>В работе</th>
+            <th>Закрыто нереализовано</th>
+            <th>Успешно реализовано</th>
+            <th>Без сделки</th>
+            <th>Задач</th>
+            <th>Срочно позвонить</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${amoRows.map((row) => `
+            <tr>
+              <td>${row.manager}</td>
+              <td>${number.format(row.clients_total || 0)}</td>
+              <td>${number.format(row.in_work || 0)}</td>
+              <td>${number.format(row.closed_lost || 0)}</td>
+              <td>${number.format(row.success || 0)}</td>
+              <td>${number.format(row.without_deal || 0)}</td>
+              <td>${number.format(row.tasks || 0)}</td>
+              <td class="${row.urgent_call ? "negative" : ""}">${number.format(row.urgent_call || 0)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
     </div>
-    <p class="muted-note">Чтобы подтянуть источники, суммы, статусы “в работе” и задачи по менеджерам без ручного ввода, нужен экспорт из amoCRM или API-ключ/виджет доступа.</p>
+    <p class="muted-note">${financeData.amo_note || "Ответственный “Юлия” автоматически считается как “Вероника Нам”."}</p>
+  ` : `
+    <div class="status-line">amoCRM готов к подключению: ответственный “Юлия” будет автоматически считаться как “Вероника Нам”.</div>
+    <p class="muted-note">Для точных статусов нужна выгрузка сделок amoCRM со стадией, суммой, источником и ответственным.</p>
   `;
 }
 
@@ -447,6 +489,24 @@ function renderCalendar(deals) {
   const occupancy = Math.round(([...bookedDates].filter((date) => date.startsWith(calendarMonth)).length / daysInMonth) * 100);
   document.querySelector("#calendarGrid").innerHTML = days.join("");
   document.querySelector("#occupancyLabel").textContent = `${calendarMonth} · Занятость ${occupancy}%`;
+  renderOccupancyRows();
+}
+
+function renderOccupancyRows() {
+  const rows = activeMonthly().sort((a, b) => a.period.localeCompare(b.period));
+  document.querySelector("#occupancyRows").innerHTML = rows.length ? rows.map((row) => {
+    const days = daysInPeriod(row.period);
+    const percent = days ? (row.events_count / days) * 100 : 0;
+    return `
+      <tr>
+        <td>${row.year}</td>
+        <td>${monthName(row.period)}</td>
+        <td>${number.format(row.events_count)}</td>
+        <td>${number.format(days)}</td>
+        <td>${pct(percent)}</td>
+      </tr>
+    `;
+  }).join("") : `<tr><td colspan="5">За выбранный период мероприятий нет.</td></tr>`;
 }
 
 function renderCac(deals) {
