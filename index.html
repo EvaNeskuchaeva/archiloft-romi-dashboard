@@ -16,6 +16,7 @@
         <button class="nav-item active" data-view="overview">⌂ Обзор</button>
         <button class="nav-item" data-view="funnel">▽ Воронка</button>
         <button class="nav-item" data-view="channels">◌ Каналы</button>
+        <button class="nav-item" data-view="sources">☷ Источники</button>
         <button class="nav-item" data-view="events">▣ Мероприятия</button>
         <button class="nav-item" data-view="equipment">⌘ Техника</button>
         <button class="nav-item" data-view="advertising">▤ Реклама</button>
@@ -82,6 +83,94 @@
                 </tr>
               </thead>
               <tbody id="channelRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="sources">
+          <div class="panel-head">
+            <h2>1–29 июня 2026: реклама и лиды</h2>
+            <span>Calltouch + amoCRM</span>
+          </div>
+          <div id="sourceKpis" class="summary-grid"></div>
+          <div id="sourceWarning" class="status-line"></div>
+        </article>
+
+        <article class="panel wide" data-panel="sources">
+          <div class="panel-head">
+            <h2>Calltouch по каналам</h2>
+            <span>расход → лиды → сделки → выручка</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Канал</th>
+                  <th>Тип</th>
+                  <th>Расход</th>
+                  <th>Клики</th>
+                  <th>Лиды</th>
+                  <th>Цена лида</th>
+                  <th>Сделки</th>
+                  <th>Выручка</th>
+                  <th>Конверсия</th>
+                </tr>
+              </thead>
+              <tbody id="sourceRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="sources">
+          <div class="panel-head">
+            <h2>Куда тратить бюджет</h2>
+            <span>вывод для руководства</span>
+          </div>
+          <div id="recommendationRows" class="decision-list"></div>
+        </article>
+
+        <article class="panel wide" data-panel="sources">
+          <div class="panel-head">
+            <h2>amoCRM за 1–29 июня</h2>
+            <span>без клиентской базы</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Источник</th>
+                  <th>Всего</th>
+                  <th>В работе</th>
+                  <th>КП/предложение</th>
+                  <th>Успешно</th>
+                  <th>Закрыто нереализ.</th>
+                  <th>Без сделки</th>
+                  <th>Задач</th>
+                </tr>
+              </thead>
+              <tbody id="amoSourceRows"></tbody>
+            </table>
+          </div>
+          <p id="amoSourceNote" class="muted-note"></p>
+        </article>
+
+        <article class="panel wide" data-panel="sources">
+          <div class="panel-head">
+            <h2>Платные источники</h2>
+            <span>Promo Group, Штопоров, Bash Today</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th>Источник</th>
+                  <th>Потратили</th>
+                  <th>Заработали</th>
+                  <th>Комментарий</th>
+                </tr>
+              </thead>
+              <tbody id="supplierRows"></tbody>
             </table>
           </div>
         </article>
@@ -230,22 +319,39 @@
         <article class="panel wide" data-panel="amortization">
           <div class="panel-head">
             <h2>Амортизация 2024-2026</h2>
-            <span>по технике</span>
+            <span>строка «Амортизация» из сводных</span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Год</th>
-                  <th>Доход техники</th>
-                  <th>Расход техники</th>
-                  <th>Чистыми</th>
+                  <th>Строк</th>
+                  <th>Сумма амортизации</th>
                   <th>Накоплено</th>
-                  <th>Остаток окупаемости</th>
-                  <th>Доступно на амортизацию</th>
+                  <th>Комментарий</th>
                 </tr>
               </thead>
               <tbody id="amortizationRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="amortization">
+          <div class="panel-head">
+            <h2>Амортизация по месяцам</h2>
+            <span>из листов мероприятий</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th>Строк</th>
+                  <th>Сумма</th>
+                </tr>
+              </thead>
+              <tbody id="amortizationMonthRows"></tbody>
             </table>
           </div>
         </article>
@@ -327,10 +433,64 @@
             <tbody id="dealEditor"></tbody>
           </table>
         </div>
+        <div class="manual-grid">
+          <section>
+            <div class="studio-head compact">
+              <div>
+                <h2>Ручная правка рекламы</h2>
+                <p>Источник, расход, лиды и выручка для управленческих корректировок</p>
+              </div>
+              <button id="addManualAd">Добавить рекламу</button>
+            </div>
+            <div class="editable-wrap">
+              <table class="editable">
+                <thead>
+                  <tr>
+                    <th>Период</th>
+                    <th>Источник</th>
+                    <th>Расход</th>
+                    <th>Лиды</th>
+                    <th>Сделки</th>
+                    <th>Выручка</th>
+                    <th>Комментарий</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="manualAdRows"></tbody>
+              </table>
+            </div>
+          </section>
+          <section>
+            <div class="studio-head compact">
+              <div>
+                <h2>Ручная правка финансов</h2>
+                <p>Выручка, расходы, прибыль и амортизация для точных цифр</p>
+              </div>
+              <button id="addManualFinance">Добавить финансы</button>
+            </div>
+            <div class="editable-wrap">
+              <table class="editable">
+                <thead>
+                  <tr>
+                    <th>Период</th>
+                    <th>Выручка</th>
+                    <th>Расходы</th>
+                    <th>Прибыль</th>
+                    <th>Амортизация</th>
+                    <th>Комментарий</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="manualFinanceRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
       </section>
     </main>
 
     <script src="dashboard-data.js"></script>
-    <script src="app.js?v=20260629-managers"></script>
+    <script src="marketing-data.js?v=20260630-june-sources"></script>
+    <script src="app.js?v=20260630-june-sources"></script>
   </body>
 </html>
