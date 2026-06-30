@@ -422,7 +422,7 @@ td {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 10px;
 }
 
@@ -472,6 +472,58 @@ td {
   line-height: 1.5;
 }
 
+.source-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.source-tag.paid {
+  color: var(--orange);
+  background: var(--orange-soft);
+}
+
+.source-tag.free {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.source-tag.untracked {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.decision-list {
+  display: grid;
+  gap: 10px;
+}
+
+.decision {
+  display: grid;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcff;
+  padding: 12px;
+}
+
+.decision b {
+  color: var(--violet);
+}
+
+.decision strong {
+  font-size: 15px;
+}
+
+.decision span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .repeat-card {
   background: #f7f8fc;
   border: 1px solid var(--line);
@@ -501,6 +553,15 @@ td {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 16px;
+}
+
+.studio-head.compact {
+  margin-top: 20px;
+}
+
+.manual-grid {
+  display: grid;
+  gap: 18px;
 }
 
 .import-btn {
@@ -552,6 +613,7 @@ body:not(.view-data) .data-studio {
 
 body.view-funnel .panel:not([data-panel="funnel"]),
 body.view-channels .panel:not([data-panel="channels"]),
+body.view-sources .panel:not([data-panel="sources"]),
 body.view-events .panel:not([data-panel="events"]),
 body.view-equipment .panel:not([data-panel="equipment"]),
 body.view-advertising .panel:not([data-panel="advertising"]),
@@ -564,6 +626,7 @@ body.view-finance .panel:not([data-panel="finance"]) {
 
 body.view-funnel .panel,
 body.view-channels .panel,
+body.view-sources .panel,
 body.view-events .panel,
 body.view-equipment .panel,
 body.view-advertising .panel,
@@ -575,6 +638,7 @@ body.view-finance .panel {
 }
 
 body.view-equipment .panel.wide,
+body.view-sources .panel.wide,
 body.view-advertising .panel.wide,
 body.view-sales .panel.wide,
 body.view-amo .panel.wide,
@@ -636,11 +700,13 @@ body.view-amortization .panel.wide {
   }
 
   body.view-equipment .panel,
+  body.view-sources .panel,
   body.view-advertising .panel,
   body.view-sales .panel,
   body.view-amo .panel,
   body.view-amortization .panel,
   body.view-equipment .panel.wide,
+  body.view-sources .panel.wide,
   body.view-advertising .panel.wide,
   body.view-sales .panel.wide,
   body.view-amo .panel.wide,
