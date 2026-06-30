@@ -1,5 +1,7 @@
 const STORAGE_KEY = "archiloft-romi-dashboard-v2";
 const MANAGER_OVERRIDES_KEY = "archiloft-manager-overrides-v1";
+const MANUAL_AD_KEY = "archiloft-manual-ad-v1";
+const MANUAL_FINANCE_KEY = "archiloft-manual-finance-v1";
 
 const financeData = window.ARCHILOFT_FINANCE_DATA || {
   monthly: [],
@@ -15,6 +17,16 @@ const financeData = window.ARCHILOFT_FINANCE_DATA || {
   equipment_transactions: [],
   amortization_yearly: [],
   amo_summary: [],
+  amo_note: ""
+};
+const marketingData = window.ARCHILOFT_MARKETING_DATA || {
+  calltouch_june_2026: { summary: {}, rows: [] },
+  amo_source_monthly: [],
+  amo_manager_june: [],
+  paid_suppliers: [],
+  amortization_yearly: [],
+  amortization_monthly: [],
+  leadership_recommendations: [],
   amo_note: ""
 };
 
@@ -49,6 +61,8 @@ const statuses = [
 const state = {
   deals: loadDeals(),
   managerOverrides: loadManagerOverrides(),
+  manualAds: loadManualRows(MANUAL_AD_KEY),
+  manualFinance: loadManualRows(MANUAL_FINANCE_KEY),
   view: "overview"
 };
 
@@ -80,6 +94,19 @@ function loadManagerOverrides() {
 
 function saveManagerOverrides() {
   localStorage.setItem(MANAGER_OVERRIDES_KEY, JSON.stringify(state.managerOverrides));
+}
+
+function loadManualRows(key) {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveManualRows(key, rows) {
+  localStorage.setItem(key, JSON.stringify(rows));
 }
 
 function loadDeals() {
@@ -199,6 +226,11 @@ function pct(value) {
 
 function formatMoney(value) {
   return money.format(Math.round(value)).replace(",00", "");
+}
+
+function sourceTypeLabel(type) {
+  const labels = { paid: "Платный", free: "Бесплатный", untracked: "Не склеен" };
+  return labels[type] || "Другое";
 }
 
 function setDefaultDates() {
@@ -409,6 +441,84 @@ function renderAdvertising() {
   document.querySelector("#adDetailRows").innerHTML = detailRows || `<tr><td colspan="4">За выбранный период рекламных платежей нет.</td></tr>`;
 }
 
+function renderSourceDashboard() {
+  const calltouch = marketingData.calltouch_june_2026 || { summary: {}, rows: [] };
+  const summary = calltouch.summary || {};
+  const cpl = summary.all_leads ? summary.budget / summary.all_leads : 0;
+  const kpis = [
+    ["Расход", summary.budget || 0],
+    ["Все лиды", summary.all_leads || 0, "number"],
+    ["Целевые лиды", summary.target_leads || 0, "number"],
+    ["Сделки", summary.deals || 0, "number"],
+    ["Выручка", summary.revenue || 0],
+    ["Цена лида", cpl],
+    ["ROI", summary.roi || 0, "percent"],
+  ];
+  document.querySelector("#sourceKpis").innerHTML = kpis.map(([label, value, kind]) => `
+    <div class="mini-card">
+      <span>${label}</span>
+      <strong>${kind === "number" ? number.format(value) : kind === "percent" ? `${number.format(Math.round(value))}%` : formatMoney(value)}</strong>
+    </div>
+  `).join("");
+
+  const blind = (calltouch.rows || []).find((row) => row.source === "Лид не найден");
+  document.querySelector("#sourceWarning").innerHTML = blind
+    ? `Главная точка контроля: ${number.format(blind.deals)} сделки и ${formatMoney(blind.revenue)} выручки попали в “Лид не найден”. Сначала нужна склейка Calltouch и amoCRM, иначе бюджет нельзя распределить честно.`
+    : "Данные Calltouch загружены.";
+
+  document.querySelector("#sourceRows").innerHTML = (calltouch.rows || [])
+    .sort((a, b) => b.revenue - a.revenue || b.leads - a.leads)
+    .map((row) => `
+      <tr>
+        <td>${row.source}</td>
+        <td><span class="source-tag ${row.type}">${sourceTypeLabel(row.type)}</span></td>
+        <td>${formatMoney(row.spend || 0)}</td>
+        <td>${number.format(row.clicks || 0)}</td>
+        <td>${number.format(row.leads || 0)}</td>
+        <td>${row.leads ? formatMoney(row.cpl || 0) : "—"}</td>
+        <td>${number.format(row.deals || 0)}</td>
+        <td>${formatMoney(row.revenue || 0)}</td>
+        <td>${row.lead_rate ? `${row.lead_rate.toFixed(2)}%` : "—"}</td>
+      </tr>
+    `).join("");
+
+  document.querySelector("#recommendationRows").innerHTML = (marketingData.leadership_recommendations || []).map((row) => `
+    <div class="decision">
+      <b>${row.priority}. ${row.source}</b>
+      <strong>${row.decision}</strong>
+      <span>${row.why}</span>
+    </div>
+  `).join("");
+
+  document.querySelector("#amoSourceRows").innerHTML = (marketingData.amo_source_monthly || []).length
+    ? marketingData.amo_source_monthly.map((row) => `
+      <tr>
+        <td>${row.source}</td>
+        <td>${number.format(row.clients_total || 0)}</td>
+        <td>${number.format(row.in_work || 0)}</td>
+        <td>${number.format(row.proposal_sent || 0)}</td>
+        <td>${number.format(row.success || 0)}</td>
+        <td>${number.format(row.closed_lost || 0)}</td>
+        <td>${number.format(row.without_deal || 0)}</td>
+        <td>${number.format(row.tasks || 0)}</td>
+      </tr>
+    `).join("")
+    : `<tr><td colspan="8">За 1–29 июня в amoCRM-файле не найдено строк для агрегации.</td></tr>`;
+  document.querySelector("#amoSourceNote").textContent = marketingData.amo_note || "";
+
+  document.querySelector("#supplierRows").innerHTML = (marketingData.paid_suppliers || [])
+    .filter((row) => activeYears().includes(row.year) || activeYears().length === 0)
+    .map((row) => `
+      <tr>
+        <td>${row.year}</td>
+        <td>${row.vendor}</td>
+        <td>${row.spend ? formatMoney(row.spend) : "—"}</td>
+        <td>${row.earned ? formatMoney(row.earned) : "нет привязки"}</td>
+        <td>${row.note || "Расход из сводных рекламных строк"}</td>
+      </tr>
+    `).join("");
+}
+
 function renderSalesAndAmo() {
   const months = activeMonthly();
   const events = sum(months, "events_count");
@@ -465,18 +575,26 @@ function renderSalesAndAmo() {
 }
 
 function renderAmortization() {
-  document.querySelector("#amortizationRows").innerHTML = (financeData.amortization_yearly || [])
+  const yearlyRows = (marketingData.amortization_yearly || financeData.amortization_yearly || []);
+  document.querySelector("#amortizationRows").innerHTML = yearlyRows
     .map((row) => `
       <tr>
         <td>${row.year}</td>
-        <td>${formatMoney(row.equipment_revenue)}</td>
-        <td>${formatMoney(row.equipment_expenses)}</td>
-        <td class="${row.equipment_net < 0 ? "negative" : "positive"}">${formatMoney(row.equipment_net)}</td>
-        <td>${formatMoney(row.cumulative_net)}</td>
-        <td>${formatMoney(row.payback_remaining)}</td>
-        <td class="${row.available_for_amortization > 0 ? "positive" : ""}">${formatMoney(row.available_for_amortization)}</td>
+        <td>${number.format(row.rows_count || 0)}</td>
+        <td>${formatMoney(row.amortization_amount || row.available_for_amortization || 0)}</td>
+        <td>${formatMoney(row.cumulative_amount || 0)}</td>
+        <td>${row.note || "Строка амортизации из сводных"}</td>
       </tr>
     `).join("");
+  document.querySelector("#amortizationMonthRows").innerHTML = (marketingData.amortization_monthly || [])
+    .filter((row) => activeYears().includes(row.year))
+    .map((row) => `
+      <tr>
+        <td>${monthName(row.period)} ${row.year}</td>
+        <td>${number.format(row.rows_count || 0)}</td>
+        <td>${formatMoney(row.amount || 0)}</td>
+      </tr>
+    `).join("") || `<tr><td colspan="3">За выбранный период строк амортизации нет.</td></tr>`;
 }
 
 function renderEventRows(deals) {
@@ -628,6 +746,25 @@ function renderEditor() {
   `).join("");
 }
 
+function renderManualTables() {
+  document.querySelector("#manualAdRows").innerHTML = renderManualRows(state.manualAds, "ad");
+  document.querySelector("#manualFinanceRows").innerHTML = renderManualRows(state.manualFinance, "finance");
+}
+
+function renderManualRows(rows, type) {
+  const fields = type === "ad"
+    ? ["period", "source", "spend", "leads", "deals", "revenue", "comment"]
+    : ["period", "revenue", "expenses", "profit", "amortization", "comment"];
+  return rows.map((row) => `
+    <tr data-id="${row.id}">
+      ${fields.map((field) => `
+        <td><input data-manual="${type}" data-field="${field}" value="${row[field] ?? ""}" ${["spend", "leads", "deals", "revenue", "expenses", "profit", "amortization"].includes(field) ? 'type="number"' : 'type="text"'}></td>
+      `).join("")}
+      <td><button class="delete-row" data-manual-delete="${type}" data-delete="${row.id}">×</button></td>
+    </tr>
+  `).join("");
+}
+
 function select(field, labels, selectedLabel, values = labels) {
   return `<select data-field="${field}">${labels.map((label, index) => `<option value="${values[index]}" ${label === selectedLabel || values[index] === selectedLabel ? "selected" : ""}>${label}</option>`).join("")}</select>`;
 }
@@ -646,9 +783,11 @@ function render(includeEditor = true) {
   renderRepeatAndForecast(deals);
   renderEquipment();
   renderAdvertising();
+  renderSourceDashboard();
   renderSalesAndAmo();
   renderAmortization();
   if (includeEditor) renderEditor();
+  if (includeEditor) renderManualTables();
 }
 
 function wireEvents() {
@@ -671,8 +810,14 @@ function wireEvents() {
     saveDeals();
     render();
   });
+  document.querySelector("#addManualAd").addEventListener("click", () => addManualRow("ad"));
+  document.querySelector("#addManualFinance").addEventListener("click", () => addManualRow("finance"));
   document.querySelector("#dealEditor").addEventListener("input", updateDeal);
   document.querySelector("#dealEditor").addEventListener("change", updateDeal);
+  document.querySelector("#manualAdRows").addEventListener("input", updateManualRow);
+  document.querySelector("#manualFinanceRows").addEventListener("input", updateManualRow);
+  document.querySelector("#manualAdRows").addEventListener("click", deleteManualRow);
+  document.querySelector("#manualFinanceRows").addEventListener("click", deleteManualRow);
   document.querySelector("#managerRows").addEventListener("input", updateManagerOverride);
   document.querySelector("#dealEditor").addEventListener("click", (event) => {
     const id = event.target.dataset.delete;
@@ -696,6 +841,42 @@ function wireEvents() {
       document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item === button));
     });
   });
+}
+
+function addManualRow(type) {
+  const rows = type === "ad" ? state.manualAds : state.manualFinance;
+  const row = type === "ad"
+    ? { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), period: "2026-06", source: "", spend: 0, leads: 0, deals: 0, revenue: 0, comment: "" }
+    : { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), period: "2026-06", revenue: 0, expenses: 0, profit: 0, amortization: 0, comment: "" };
+  rows.unshift(row);
+  saveManualRows(type === "ad" ? MANUAL_AD_KEY : MANUAL_FINANCE_KEY, rows);
+  renderManualTables();
+}
+
+function updateManualRow(event) {
+  const type = event.target.dataset.manual;
+  const field = event.target.dataset.field;
+  if (!type || !field) return;
+  const rows = type === "ad" ? state.manualAds : state.manualFinance;
+  const row = rows.find((item) => item.id === event.target.closest("tr").dataset.id);
+  if (!row) return;
+  const numeric = ["spend", "leads", "deals", "revenue", "expenses", "profit", "amortization"].includes(field);
+  row[field] = numeric ? Number(event.target.value || 0) : event.target.value;
+  saveManualRows(type === "ad" ? MANUAL_AD_KEY : MANUAL_FINANCE_KEY, rows);
+}
+
+function deleteManualRow(event) {
+  const type = event.target.dataset.manualDelete;
+  const id = event.target.dataset.delete;
+  if (!type || !id) return;
+  if (type === "ad") {
+    state.manualAds = state.manualAds.filter((row) => row.id !== id);
+    saveManualRows(MANUAL_AD_KEY, state.manualAds);
+  } else {
+    state.manualFinance = state.manualFinance.filter((row) => row.id !== id);
+    saveManualRows(MANUAL_FINANCE_KEY, state.manualFinance);
+  }
+  renderManualTables();
 }
 
 function updateManagerOverride(event) {
