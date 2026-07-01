@@ -1776,7 +1776,7 @@ function renderRepeatAndForecast(deals) {
   ];
   document.querySelector("#forecastBox").innerHTML = rows.map(([label, value, width]) => `
     <div class="forecast-row"><span>${label}</span><div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div><b>${value}</b></div>
-  `).join("") + `<b>Прогноз уточняется после подключения календаря и amoCRM</b>`;
+  `).join("") + `<b>Прогноз уточняется после подключения календаря и CRM-выгрузок</b>`;
 }
 
 function renderEditor() {
