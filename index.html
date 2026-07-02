@@ -811,6 +811,26 @@ body.view-registry .panel.wide {
 
         <article class="panel wide" data-panel="overview">
           <div class="panel-head">
+            <h2>Май → Июнь</h2>
+            <span>сравнение двух таблиц</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Показатель</th>
+                  <th>Май 2026</th>
+                  <th>Июнь 2026</th>
+                  <th>Разница</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel wide" data-panel="overview">
+          <div class="panel-head">
             <h2>Топ источников по бюджету CRM</h2>
             <span>что дает деньги и сделки</span>
           </div>
@@ -1013,1320 +1033,2618 @@ body.view-registry .panel.wide {
     </main>
 
     <script>
-const dashboardData = {
-  "source_file": "ФИНАЛ К СОВЕЩАНИЮ .xlsx",
-  "sheets_used": [
-    "Дашборд",
-    "Каналы",
-    "Этапы_CRM",
-    "Реестр Лиды Деньги Гениально",
-    "График эффективности"
-  ],
-  "key_figures": [
-    {
-      "label": "Потратили всего",
-      "value": 105292.87
-    },
-    {
-      "label": "Лиды Calltouch всего",
-      "value": 82
-    },
-    {
-      "label": "Сделки CRM без дублей",
-      "value": 132
-    },
-    {
-      "label": "Квалифицированные лиды",
-      "value": 120
-    },
-    {
-      "label": "Звонки / касания",
-      "value": 40
-    },
-    {
-      "label": "Сделки в работе",
-      "value": 38
-    },
-    {
-      "label": "Закрыто",
-      "value": 94
-    },
-    {
-      "label": "КП / предложения",
-      "value": 32
-    },
-    {
-      "label": "Встреча проведена / просмотры",
-      "value": 4
-    },
-    {
-      "label": "Брони",
-      "value": 0
-    },
-    {
-      "label": "Договоры",
-      "value": 0
-    },
-    {
-      "label": "Предоплаты / оплаты",
-      "value": 0
-    },
-    {
-      "label": "Реализованные мероприятия",
-      "value": 0
-    },
-    {
-      "label": "Потенциальный бюджет CRM",
-      "value": 26680240
-    }
-  ],
-  "manager_summary": [
-    {
-      "manager": "Ирина",
-      "deals": 46,
-      "share": 0.3484848484848485,
-      "qualified": 42,
-      "proposal": 12,
-      "meetings": 3,
-      "budget": 9900240
-    },
-    {
-      "manager": "Дарья",
-      "deals": 80,
-      "share": 0.6060606060606061,
-      "qualified": 73,
-      "proposal": 20,
-      "meetings": 3,
-      "budget": 16280000
-    },
-    {
-      "manager": "Другие/общий доступ",
-      "deals": 6,
-      "share": 0.04545454545454546,
-      "qualified": 5,
-      "proposal": 0,
-      "meetings": 0,
-      "budget": 500000
-    }
-  ],
-  "funnel": [
-    {
-      "stage": "В работе",
-      "count": 38,
-      "share": 0.2878787878787879,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Закрыто",
-      "count": 94,
-      "share": 0.7121212121212122,
-      "comment": "Закрытые сделки"
-    },
-    {
-      "stage": "КП / предложение",
-      "count": 32,
-      "share": 0.2424242424242424,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Встреча назначена",
-      "count": 1,
-      "share": 0.007575757575757576,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Встреча проведена",
-      "count": 4,
-      "share": 0.0303030303030303,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Брони",
-      "count": 0,
-      "share": 0,
-      "comment": "Нет отдельного поля в CRM"
-    },
-    {
-      "stage": "Договоры / предоплаты",
-      "count": 0,
-      "share": 0,
-      "comment": "Нет данных оплат в CRM"
-    },
-    {
-      "stage": "Реализовано",
-      "count": 0,
-      "share": 0,
-      "comment": "Нет данных реализации"
-    }
-  ],
-  "top_sources": [
-    {
-      "source": "Лид не найден / не указан",
-      "ct_leads": 0,
-      "crm_deals": 28,
-      "qualified": 26,
-      "proposal": 7,
-      "meetings": 1,
-      "ct_revenue": 12770240,
-      "crm_budget": 5780240,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Изменить учет источника"
-    },
-    {
-      "source": "Органика",
-      "ct_leads": 29,
-      "crm_deals": 18,
-      "qualified": 18,
-      "proposal": 4,
-      "meetings": 1,
-      "ct_revenue": 5570000,
-      "crm_budget": 5570000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "source": "Яндекс Директ / CPC",
-      "ct_leads": 24,
-      "crm_deals": 19,
-      "qualified": 19,
-      "proposal": 5,
-      "meetings": 0,
-      "ct_revenue": 4190000,
-      "crm_budget": 4190000,
-      "spend": 105292.87,
-      "cpl": 4387.202916666666,
-      "decision": "Оставить, оптимизировать CPL"
-    },
-    {
-      "source": "Соцсети / Telegram",
-      "ct_leads": 1,
-      "crm_deals": 15,
-      "qualified": 15,
-      "proposal": 3,
-      "meetings": 1,
-      "ct_revenue": 200000,
-      "crm_budget": 2470000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "source": "Уже обращались",
-      "ct_leads": 0,
-      "crm_deals": 9,
-      "qualified": 9,
-      "proposal": 2,
-      "meetings": 0,
-      "ct_revenue": 0,
-      "crm_budget": 2100000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "source": "Прямой брендовый заход",
-      "ct_leads": 18,
-      "crm_deals": 11,
-      "qualified": 11,
-      "proposal": 2,
-      "meetings": 0,
-      "ct_revenue": 1880000,
-      "crm_budget": 1920000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "source": "Рекомендации / рефералы",
-      "ct_leads": 6,
-      "crm_deals": 6,
-      "qualified": 6,
-      "proposal": 2,
-      "meetings": 1,
-      "ct_revenue": 1230000,
-      "crm_budget": 1270000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "source": "Почта",
-      "ct_leads": 0,
-      "crm_deals": 6,
-      "qualified": 6,
-      "proposal": 2,
-      "meetings": 0,
-      "ct_revenue": 0,
-      "crm_budget": 1030000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "source": "Спам / нецелевые",
-      "ct_leads": 0,
-      "crm_deals": 10,
-      "qualified": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "ct_revenue": 0,
-      "crm_budget": 600000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Отключить / исключить из анализа"
-    },
-    {
-      "source": "Ищу площадку / холодный поиск",
-      "ct_leads": 0,
-      "crm_deals": 4,
-      "qualified": 4,
-      "proposal": 4,
-      "meetings": 0,
-      "ct_revenue": 0,
-      "crm_budget": 600000,
-      "spend": 0,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    }
-  ],
-  "channels": [
-    {
-      "group": "Платные",
-      "source": "Яндекс Директ / CPC",
-      "supplier": "Promo Group",
-      "touchpoint": "Сайт / Tilda / Mango",
-      "spend": 105292.87,
-      "ct_leads": 24,
-      "crm_deals": 24,
-      "qualified": 19,
-      "irina": 7,
-      "daria": 12,
-      "other": 0,
-      "calls": 10,
-      "proposal": 5,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 4190000,
-      "crm_budget": 4190000,
-      "cpl": 4387,
-      "decision": "Оставить, оптимизировать CPL"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Лид не найден / не указан",
-      "supplier": "",
-      "touchpoint": "Не указано 14, Mango / звонок 12",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 28,
-      "qualified": 26,
-      "irina": 10,
-      "daria": 13,
-      "other": 5,
-      "calls": 12,
-      "proposal": 7,
-      "meetings": 1,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 12770240,
-      "crm_budget": 5780240,
-      "cpl": 0,
-      "decision": "Изменить учет источника"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Органика",
-      "supplier": "",
-      "touchpoint": "Mango / звонок 8, Tilda / форма сайта 6",
-      "spend": 0,
-      "ct_leads": 29,
-      "crm_deals": 18,
-      "qualified": 18,
-      "irina": 10,
-      "daria": 8,
-      "other": 0,
-      "calls": 8,
-      "proposal": 4,
-      "meetings": 1,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 5570000,
-      "crm_budget": 5570000,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Соцсети / Telegram",
-      "supplier": "",
-      "touchpoint": "Мессенджер 11, VK / соцсети 2",
-      "spend": 0,
-      "ct_leads": 1,
-      "crm_deals": 15,
-      "qualified": 15,
-      "irina": 5,
-      "daria": 10,
-      "other": 0,
-      "calls": 1,
-      "proposal": 3,
-      "meetings": 1,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 200000,
-      "crm_budget": 2470000,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Уже обращались",
-      "supplier": "",
-      "touchpoint": "Ручной ввод CRM 9",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 9,
-      "qualified": 9,
-      "irina": 0,
-      "daria": 8,
-      "other": 1,
-      "calls": 0,
-      "proposal": 2,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 2100000,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Прямой брендовый заход",
-      "supplier": "",
-      "touchpoint": "сайт архилофт ",
-      "spend": 0,
-      "ct_leads": 18,
-      "crm_deals": 11,
-      "qualified": 11,
-      "irina": 5,
-      "daria": 6,
-      "other": 0,
-      "calls": 7,
-      "proposal": 2,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 1880000,
-      "crm_budget": 1920000,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Рекомендации / рефералы",
-      "supplier": "",
-      "touchpoint": "Tilda / форма сайта 3, Mango / звонок 2",
-      "spend": 0,
-      "ct_leads": 6,
-      "crm_deals": 6,
-      "qualified": 6,
-      "irina": 2,
-      "daria": 4,
-      "other": 0,
-      "calls": 2,
-      "proposal": 2,
-      "meetings": 1,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 1230000,
-      "crm_budget": 1270000,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Почта",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 6,
-      "qualified": 6,
-      "irina": 2,
-      "daria": 4,
-      "other": 0,
-      "calls": 0,
-      "proposal": 2,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 1030000,
-      "cpl": 0,
-      "decision": "Усилить"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Ищу площадку / холодный поиск",
-      "supplier": "",
-      "touchpoint": "Ручной ввод CRM 4",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 4,
-      "qualified": 4,
-      "irina": 1,
-      "daria": 3,
-      "other": 0,
-      "calls": 0,
-      "proposal": 4,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 600000,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Спам / нецелевые",
-      "supplier": "",
-      "touchpoint": "Спам 8, Не указано 2",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 10,
-      "qualified": 0,
-      "irina": 3,
-      "daria": 7,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 600000,
-      "cpl": 0,
-      "decision": "Отключить / исключить из анализа"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Вед Вед",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 2,
-      "qualified": 2,
-      "irina": 0,
-      "daria": 2,
-      "other": 0,
-      "calls": 0,
-      "proposal": 1,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 400000,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Bash Today",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 1,
-      "qualified": 1,
-      "irina": 0,
-      "daria": 1,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 200000,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Revel Time / SpeedRent",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 1,
-      "qualified": 1,
-      "irina": 0,
-      "daria": 1,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 200000,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Рассылка",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 1,
-      "qualified": 1,
-      "irina": 0,
-      "daria": 1,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 200000,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Агрегатор без уточнения",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 4,
-      "crm_deals": 1,
-      "qualified": 1,
-      "irina": 1,
-      "daria": 0,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 400000,
-      "crm_budget": 150000,
-      "cpl": 0,
-      "decision": "Оставить в наблюдении"
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Горько",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 0,
-      "qualified": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 0,
-      "cpl": 0,
-      "decision": ""
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Портал №1",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 0,
-      "qualified": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 0,
-      "cpl": 0,
-      "decision": ""
-    },
-    {
-      "group": "Бесплатные / органика / прочие",
-      "source": "Яндекс Карты",
-      "supplier": "",
-      "touchpoint": "",
-      "spend": 0,
-      "ct_leads": 0,
-      "crm_deals": 0,
-      "qualified": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "calls": 0,
-      "proposal": 0,
-      "meetings": 0,
-      "bookings": 0,
-      "paid": 0,
-      "realized": 0,
-      "ct_revenue": 0,
-      "crm_budget": 0,
-      "cpl": 0,
-      "decision": ""
-    }
-  ],
-  "channel_totals": {
-    "ct_leads": 82,
-    "crm_deals": 137,
-    "qualified": 120,
-    "spend": 105292.87,
-    "crm_budget": 26680240,
-    "ct_revenue": 26240240
-  },
-  "stages": [
-    {
-      "stage": "В работе",
-      "total": 38,
-      "irina": 16,
-      "daria": 21,
-      "other": 1,
-      "share": 0.2878787878787879,
-      "budget": 11130240,
-      "comment": "Активные этапы"
-    },
-    {
-      "stage": "Закрыто",
-      "total": 94,
-      "irina": 30,
-      "daria": 59,
-      "other": 5,
-      "share": 0.7121212121212122,
-      "budget": 15550000,
-      "comment": "Закрытые сделки"
-    },
-    {
-      "stage": "КП / предложение",
-      "total": 32,
-      "irina": 12,
-      "daria": 20,
-      "other": 0,
-      "share": 0.2424242424242424,
-      "budget": 9970240,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Встреча назначена",
-      "total": 1,
-      "irina": 1,
-      "daria": 0,
-      "other": 0,
-      "share": 0.007575757575757576,
-      "budget": 240000,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Встреча проведена / просмотр",
-      "total": 4,
-      "irina": 3,
-      "daria": 1,
-      "other": 0,
-      "share": 0.0303030303030303,
-      "budget": 920000,
-      "comment": "Активный этап"
-    },
-    {
-      "stage": "Брони",
-      "total": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "share": 0,
-      "budget": 0,
-      "comment": "В CRM нет отдельного этапа"
-    },
-    {
-      "stage": "Договоры",
-      "total": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "share": 0,
-      "budget": 0,
-      "comment": "Нет данных"
-    },
-    {
-      "stage": "Предоплаты / оплаты",
-      "total": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "share": 0,
-      "budget": 0,
-      "comment": "Нет данных"
-    },
-    {
-      "stage": "Реализованные мероприятия",
-      "total": 0,
-      "irina": 0,
-      "daria": 0,
-      "other": 0,
-      "share": 0,
-      "budget": 0,
-      "comment": "Нет данных"
-    }
-  ],
-  "source_stages": [
-    {
-      "stage": "Озвучено предложение",
-      "count": 32,
-      "share": 0.2424242424242424,
-      "budget": 9970240
-    },
-    {
-      "stage": "Закрыто и не реализовано(очистка базы)",
-      "count": 27,
-      "share": 0.2045454545454546,
-      "budget": 2230000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
-      "count": 21,
-      "share": 0.1590909090909091,
-      "budget": 3910000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Не вышли на связь)",
-      "count": 14,
-      "share": 0.1060606060606061,
-      "budget": 2760000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Не подходит по расположению)",
-      "count": 8,
-      "share": 0.06060606060606061,
-      "budget": 1520000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Отмена события)",
-      "count": 8,
-      "share": 0.06060606060606061,
-      "budget": 1700000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Дата занята)",
-      "count": 7,
-      "share": 0.05303030303030303,
-      "budget": 1640000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
-      "count": 5,
-      "share": 0.03787878787878788,
-      "budget": 1110000
-    },
-    {
-      "stage": "Встреча проведена",
-      "count": 4,
-      "share": 0.0303030303030303,
-      "budget": 920000
-    },
-    {
-      "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
-      "count": 4,
-      "share": 0.0303030303030303,
-      "budget": 680000
-    },
-    {
-      "stage": "Назначена встреча",
-      "count": 1,
-      "share": 0.007575757575757576,
-      "budget": 240000
-    }
-  ],
-  "registry_summary": {
-    "rows": 132,
-    "qualified": 120,
-    "budget": 26680240,
-    "paid": 0,
-    "realized": 0,
-    "by_source": [
+const reportData = {
+  "current": {
+    "month": "Июнь 2026",
+    "source_file": "ФИНАЛ К СОВЕЩАНИЮ .xlsx",
+    "sheets_used": [
+      "Дашборд",
+      "Каналы",
+      "Этапы_CRM",
+      "Реестр Лиды Деньги Гениально",
+      "График эффективности"
+    ],
+    "key_figures": [
+      {
+        "label": "Потратили всего",
+        "value": 105292.87
+      },
+      {
+        "label": "Лиды Calltouch всего",
+        "value": 82
+      },
+      {
+        "label": "Сделки CRM без дублей",
+        "value": 132
+      },
+      {
+        "label": "Квалифицированные лиды",
+        "value": 120
+      },
+      {
+        "label": "Звонки / касания",
+        "value": 40
+      },
+      {
+        "label": "Сделки в работе",
+        "value": 38
+      },
+      {
+        "label": "Закрыто",
+        "value": 94
+      },
+      {
+        "label": "КП / предложения",
+        "value": 32
+      },
+      {
+        "label": "Встреча проведена / просмотры",
+        "value": 4
+      },
+      {
+        "label": "Брони",
+        "value": 0
+      },
+      {
+        "label": "Договоры",
+        "value": 0
+      },
+      {
+        "label": "Предоплаты / оплаты",
+        "value": 0
+      },
+      {
+        "label": "Реализованные мероприятия",
+        "value": 0
+      },
+      {
+        "label": "Потенциальный бюджет CRM",
+        "value": 26680240
+      }
+    ],
+    "manager_summary": [
+      {
+        "manager": "Ирина",
+        "deals": 46,
+        "share": 0.3484848484848485,
+        "qualified": 42,
+        "proposal": 12,
+        "meetings": 3,
+        "budget": 9900240
+      },
+      {
+        "manager": "Дарья",
+        "deals": 80,
+        "share": 0.6060606060606061,
+        "qualified": 73,
+        "proposal": 20,
+        "meetings": 3,
+        "budget": 16280000
+      },
+      {
+        "manager": "Другие/общий доступ",
+        "deals": 6,
+        "share": 0.04545454545454546,
+        "qualified": 5,
+        "proposal": 0,
+        "meetings": 0,
+        "budget": 500000
+      }
+    ],
+    "funnel": [
+      {
+        "stage": "В работе",
+        "count": 38,
+        "share": 0.2878787878787879,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Закрыто",
+        "count": 94,
+        "share": 0.7121212121212122,
+        "comment": "Закрытые сделки"
+      },
+      {
+        "stage": "КП / предложение",
+        "count": 32,
+        "share": 0.2424242424242424,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча назначена",
+        "count": 1,
+        "share": 0.007575757575757576,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча проведена",
+        "count": 4,
+        "share": 0.0303030303030303,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Брони",
+        "count": 0,
+        "share": 0,
+        "comment": "Нет отдельного поля в CRM"
+      },
+      {
+        "stage": "Договоры / предоплаты",
+        "count": 0,
+        "share": 0,
+        "comment": "Нет данных оплат в CRM"
+      },
+      {
+        "stage": "Реализовано",
+        "count": 0,
+        "share": 0,
+        "comment": "Нет данных реализации"
+      }
+    ],
+    "top_sources": [
       {
         "source": "Лид не найден / не указан",
-        "deals": 28,
+        "ct_leads": 0,
+        "crm_deals": 28,
         "qualified": 26,
-        "budget": 5780240,
-        "paid": 0,
-        "realized": 0
+        "proposal": 7,
+        "meetings": 1,
+        "ct_revenue": 12770240,
+        "crm_budget": 5780240,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Изменить учет источника"
       },
       {
         "source": "Органика",
-        "deals": 18,
+        "ct_leads": 29,
+        "crm_deals": 18,
         "qualified": 18,
-        "budget": 5570000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 4,
+        "meetings": 1,
+        "ct_revenue": 5570000,
+        "crm_budget": 5570000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
       },
       {
         "source": "Яндекс Директ / CPC",
-        "deals": 19,
+        "ct_leads": 24,
+        "crm_deals": 19,
         "qualified": 19,
-        "budget": 4190000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 5,
+        "meetings": 0,
+        "ct_revenue": 4190000,
+        "crm_budget": 4190000,
+        "spend": 105292.87,
+        "cpl": 4387.202916666666,
+        "decision": "Оставить, оптимизировать CPL"
       },
       {
         "source": "Соцсети / Telegram",
-        "deals": 15,
+        "ct_leads": 1,
+        "crm_deals": 15,
         "qualified": 15,
-        "budget": 2470000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 3,
+        "meetings": 1,
+        "ct_revenue": 200000,
+        "crm_budget": 2470000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
       },
       {
         "source": "Уже обращались",
-        "deals": 9,
+        "ct_leads": 0,
+        "crm_deals": 9,
         "qualified": 9,
-        "budget": 2100000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 2,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 2100000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
       },
       {
         "source": "Прямой брендовый заход",
-        "deals": 11,
+        "ct_leads": 18,
+        "crm_deals": 11,
         "qualified": 11,
-        "budget": 1920000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 2,
+        "meetings": 0,
+        "ct_revenue": 1880000,
+        "crm_budget": 1920000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
       },
       {
         "source": "Рекомендации / рефералы",
-        "deals": 6,
+        "ct_leads": 6,
+        "crm_deals": 6,
         "qualified": 6,
-        "budget": 1270000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 2,
+        "meetings": 1,
+        "ct_revenue": 1230000,
+        "crm_budget": 1270000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
       },
       {
         "source": "Почта",
-        "deals": 6,
+        "ct_leads": 0,
+        "crm_deals": 6,
         "qualified": 6,
-        "budget": 1030000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 2,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 1030000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
       },
       {
         "source": "Спам / нецелевые",
-        "deals": 10,
+        "ct_leads": 0,
+        "crm_deals": 10,
         "qualified": 0,
-        "budget": 600000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 600000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Отключить / исключить из анализа"
       },
       {
         "source": "Ищу площадку / холодный поиск",
-        "deals": 4,
+        "ct_leads": 0,
+        "crm_deals": 4,
         "qualified": 4,
-        "budget": 600000,
-        "paid": 0,
-        "realized": 0
-      },
-      {
-        "source": "Вед Вед",
-        "deals": 2,
-        "qualified": 2,
-        "budget": 400000,
-        "paid": 0,
-        "realized": 0
-      },
-      {
-        "source": "Bash Today",
-        "deals": 1,
-        "qualified": 1,
-        "budget": 200000,
-        "paid": 0,
-        "realized": 0
-      },
-      {
-        "source": "Revel Time / SpeedRent",
-        "deals": 1,
-        "qualified": 1,
-        "budget": 200000,
-        "paid": 0,
-        "realized": 0
-      },
-      {
-        "source": "Рассылка",
-        "deals": 1,
-        "qualified": 1,
-        "budget": 200000,
-        "paid": 0,
-        "realized": 0
-      },
-      {
-        "source": "Агрегатор без уточнения",
-        "deals": 1,
-        "qualified": 1,
-        "budget": 150000,
-        "paid": 0,
-        "realized": 0
+        "proposal": 4,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 600000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
       }
     ],
-    "by_stage": [
+    "channels": [
+      {
+        "group": "Платные",
+        "source": "Яндекс Директ / CPC",
+        "supplier": "Promo Group",
+        "touchpoint": "Сайт / Tilda / Mango",
+        "spend": 105292.87,
+        "ct_leads": 24,
+        "crm_deals": 19,
+        "qualified": 19,
+        "irina": 7,
+        "daria": 12,
+        "other": 0,
+        "calls": 10,
+        "proposal": 5,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 4190000,
+        "crm_budget": 4190000,
+        "cpl": 4387,
+        "decision": "Оставить, оптимизировать CPL"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Лид не найден / не указан",
+        "supplier": "",
+        "touchpoint": "Не указано 14, Mango / звонок 12",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 28,
+        "qualified": 26,
+        "irina": 10,
+        "daria": 13,
+        "other": 5,
+        "calls": 12,
+        "proposal": 7,
+        "meetings": 1,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 12770240,
+        "crm_budget": 5780240,
+        "cpl": 0,
+        "decision": "Изменить учет источника"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Органика",
+        "supplier": "",
+        "touchpoint": "Mango / звонок 8, Tilda / форма сайта 6",
+        "spend": 0,
+        "ct_leads": 29,
+        "crm_deals": 18,
+        "qualified": 18,
+        "irina": 10,
+        "daria": 8,
+        "other": 0,
+        "calls": 8,
+        "proposal": 4,
+        "meetings": 1,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 5570000,
+        "crm_budget": 5570000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Соцсети / Telegram",
+        "supplier": "",
+        "touchpoint": "Мессенджер 11, VK / соцсети 2",
+        "spend": 0,
+        "ct_leads": 1,
+        "crm_deals": 15,
+        "qualified": 15,
+        "irina": 5,
+        "daria": 10,
+        "other": 0,
+        "calls": 1,
+        "proposal": 3,
+        "meetings": 1,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 200000,
+        "crm_budget": 2470000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Уже обращались",
+        "supplier": "",
+        "touchpoint": "Ручной ввод CRM 9",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 9,
+        "qualified": 9,
+        "irina": 0,
+        "daria": 8,
+        "other": 1,
+        "calls": 0,
+        "proposal": 2,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 2100000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Прямой брендовый заход",
+        "supplier": "",
+        "touchpoint": "сайт архилофт ",
+        "spend": 0,
+        "ct_leads": 18,
+        "crm_deals": 11,
+        "qualified": 11,
+        "irina": 5,
+        "daria": 6,
+        "other": 0,
+        "calls": 7,
+        "proposal": 2,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 1880000,
+        "crm_budget": 1920000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Рекомендации / рефералы",
+        "supplier": "",
+        "touchpoint": "Tilda / форма сайта 3, Mango / звонок 2",
+        "spend": 0,
+        "ct_leads": 6,
+        "crm_deals": 6,
+        "qualified": 6,
+        "irina": 2,
+        "daria": 4,
+        "other": 0,
+        "calls": 2,
+        "proposal": 2,
+        "meetings": 1,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 1230000,
+        "crm_budget": 1270000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Почта",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 6,
+        "qualified": 6,
+        "irina": 2,
+        "daria": 4,
+        "other": 0,
+        "calls": 0,
+        "proposal": 2,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 1030000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Ищу площадку / холодный поиск",
+        "supplier": "",
+        "touchpoint": "Ручной ввод CRM 4",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 4,
+        "qualified": 4,
+        "irina": 1,
+        "daria": 3,
+        "other": 0,
+        "calls": 0,
+        "proposal": 4,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 600000,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Спам / нецелевые",
+        "supplier": "",
+        "touchpoint": "Спам 8, Не указано 2",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 10,
+        "qualified": 0,
+        "irina": 3,
+        "daria": 7,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 600000,
+        "cpl": 0,
+        "decision": "Отключить / исключить из анализа"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Вед Вед",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 2,
+        "qualified": 2,
+        "irina": 0,
+        "daria": 2,
+        "other": 0,
+        "calls": 0,
+        "proposal": 1,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 400000,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Bash Today",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Revel Time / SpeedRent",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Рассылка",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Агрегатор без уточнения",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 4,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 1,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 400000,
+        "crm_budget": 150000,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Горько",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Портал №1",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Яндекс Карты",
+        "supplier": "",
+        "touchpoint": "",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      }
+    ],
+    "channel_totals": {
+      "ct_leads": 82,
+      "crm_deals": 132,
+      "qualified": 120,
+      "spend": 105292.87,
+      "crm_budget": 26680240,
+      "ct_revenue": 26240240
+    },
+    "stages": [
+      {
+        "stage": "В работе",
+        "total": 38,
+        "irina": 16,
+        "daria": 21,
+        "other": 1,
+        "share": 0.2878787878787879,
+        "budget": 11130240,
+        "comment": "Активные этапы"
+      },
+      {
+        "stage": "Закрыто",
+        "total": 94,
+        "irina": 30,
+        "daria": 59,
+        "other": 5,
+        "share": 0.7121212121212122,
+        "budget": 15550000,
+        "comment": "Закрытые сделки"
+      },
+      {
+        "stage": "КП / предложение",
+        "total": 32,
+        "irina": 12,
+        "daria": 20,
+        "other": 0,
+        "share": 0.2424242424242424,
+        "budget": 9970240,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча назначена",
+        "total": 1,
+        "irina": 1,
+        "daria": 0,
+        "other": 0,
+        "share": 0.007575757575757576,
+        "budget": 240000,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча проведена / просмотр",
+        "total": 4,
+        "irina": 3,
+        "daria": 1,
+        "other": 0,
+        "share": 0.0303030303030303,
+        "budget": 920000,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Брони",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "В CRM нет отдельного этапа"
+      },
+      {
+        "stage": "Договоры",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "Нет данных"
+      },
+      {
+        "stage": "Предоплаты / оплаты",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "Нет данных"
+      },
+      {
+        "stage": "Реализованные мероприятия",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "Нет данных"
+      }
+    ],
+    "source_stages": [
       {
         "stage": "Озвучено предложение",
-        "deals": 32,
-        "qualified": 32,
+        "count": 32,
+        "share": 0.2424242424242424,
         "budget": 9970240
       },
       {
-        "stage": "Закрыто и не реализовано",
-        "deals": 27,
-        "qualified": 19,
+        "stage": "Закрыто и не реализовано(очистка базы)",
+        "count": 27,
+        "share": 0.2045454545454546,
         "budget": 2230000
       },
       {
         "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
-        "deals": 21,
-        "qualified": 21,
+        "count": 21,
+        "share": 0.1590909090909091,
         "budget": 3910000
       },
       {
         "stage": "Закрыто и не реализовано (Не вышли на связь)",
-        "deals": 14,
-        "qualified": 11,
+        "count": 14,
+        "share": 0.1060606060606061,
         "budget": 2760000
       },
       {
-        "stage": "Закрыто и не реализовано (Отмена события)",
-        "deals": 8,
-        "qualified": 8,
-        "budget": 1700000
-      },
-      {
         "stage": "Закрыто и не реализовано (Не подходит по расположению)",
-        "deals": 8,
-        "qualified": 8,
+        "count": 8,
+        "share": 0.06060606060606061,
         "budget": 1520000
       },
       {
+        "stage": "Закрыто и не реализовано (Отмена события)",
+        "count": 8,
+        "share": 0.06060606060606061,
+        "budget": 1700000
+      },
+      {
         "stage": "Закрыто и не реализовано (Дата занята)",
-        "deals": 7,
-        "qualified": 7,
+        "count": 7,
+        "share": 0.05303030303030303,
         "budget": 1640000
       },
       {
         "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
-        "deals": 5,
-        "qualified": 5,
+        "count": 5,
+        "share": 0.03787878787878788,
         "budget": 1110000
       },
       {
         "stage": "Встреча проведена",
-        "deals": 4,
-        "qualified": 4,
+        "count": 4,
+        "share": 0.0303030303030303,
         "budget": 920000
       },
       {
         "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
-        "deals": 4,
-        "qualified": 4,
+        "count": 4,
+        "share": 0.0303030303030303,
         "budget": 680000
       },
       {
         "stage": "Назначена встреча",
-        "deals": 1,
-        "qualified": 1,
+        "count": 1,
+        "share": 0.007575757575757576,
         "budget": 240000
-      },
-      {
-        "stage": "Неразобранное",
-        "deals": 1,
-        "qualified": 0,
-        "budget": 0
       }
     ],
-    "by_touchpoint": [
+    "registry_summary": {
+      "rows": 132,
+      "qualified": 120,
+      "budget": 26680240,
+      "paid": 0,
+      "realized": 0,
+      "by_source": [
+        {
+          "source": "Лид не найден / не указан",
+          "deals": 28,
+          "qualified": 26,
+          "budget": 5780240,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Органика",
+          "deals": 18,
+          "qualified": 18,
+          "budget": 5570000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Яндекс Директ / CPC",
+          "deals": 19,
+          "qualified": 19,
+          "budget": 4190000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Соцсети / Telegram",
+          "deals": 15,
+          "qualified": 15,
+          "budget": 2470000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Уже обращались",
+          "deals": 9,
+          "qualified": 9,
+          "budget": 2100000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Прямой брендовый заход",
+          "deals": 11,
+          "qualified": 11,
+          "budget": 1920000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Рекомендации / рефералы",
+          "deals": 6,
+          "qualified": 6,
+          "budget": 1270000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Почта",
+          "deals": 6,
+          "qualified": 6,
+          "budget": 1030000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Спам / нецелевые",
+          "deals": 10,
+          "qualified": 0,
+          "budget": 600000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Ищу площадку / холодный поиск",
+          "deals": 4,
+          "qualified": 4,
+          "budget": 600000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Вед Вед",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 400000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Bash Today",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Revel Time / SpeedRent",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Рассылка",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Агрегатор без уточнения",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 150000,
+          "paid": 0,
+          "realized": 0
+        }
+      ],
+      "by_stage": [
+        {
+          "stage": "Озвучено предложение",
+          "deals": 32,
+          "qualified": 32,
+          "budget": 9970240
+        },
+        {
+          "stage": "Закрыто и не реализовано",
+          "deals": 27,
+          "qualified": 19,
+          "budget": 2230000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
+          "deals": 21,
+          "qualified": 21,
+          "budget": 3910000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не вышли на связь)",
+          "deals": 14,
+          "qualified": 11,
+          "budget": 2760000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Отмена события)",
+          "deals": 8,
+          "qualified": 8,
+          "budget": 1700000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не подходит по расположению)",
+          "deals": 8,
+          "qualified": 8,
+          "budget": 1520000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Дата занята)",
+          "deals": 7,
+          "qualified": 7,
+          "budget": 1640000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
+          "deals": 5,
+          "qualified": 5,
+          "budget": 1110000
+        },
+        {
+          "stage": "Встреча проведена",
+          "deals": 4,
+          "qualified": 4,
+          "budget": 920000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
+          "deals": 4,
+          "qualified": 4,
+          "budget": 680000
+        },
+        {
+          "stage": "Назначена встреча",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 240000
+        },
+        {
+          "stage": "Неразобранное",
+          "deals": 1,
+          "qualified": 0,
+          "budget": 0
+        }
+      ],
+      "by_touchpoint": [
+        {
+          "touchpoint": "Mango / звонок",
+          "deals": 40,
+          "qualified": 40,
+          "budget": 7180000
+        },
+        {
+          "touchpoint": "Tilda / форма сайта",
+          "deals": 21,
+          "qualified": 21,
+          "budget": 4580000
+        },
+        {
+          "touchpoint": "Не указано",
+          "deals": 18,
+          "qualified": 14,
+          "budget": 3700240
+        },
+        {
+          "touchpoint": "Ручной ввод CRM",
+          "deals": 16,
+          "qualified": 16,
+          "budget": 5540000
+        },
+        {
+          "touchpoint": "Мессенджер",
+          "deals": 13,
+          "qualified": 13,
+          "budget": 2470000
+        },
+        {
+          "touchpoint": "Почта",
+          "deals": 8,
+          "qualified": 8,
+          "budget": 1460000
+        },
+        {
+          "touchpoint": "Спам",
+          "deals": 8,
+          "qualified": 0,
+          "budget": 600000
+        },
+        {
+          "touchpoint": "Агрегатор",
+          "deals": 3,
+          "qualified": 3,
+          "budget": 550000
+        },
+        {
+          "touchpoint": "VK / соцсети",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 0
+        },
+        {
+          "touchpoint": "Bash Today",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000
+        },
+        {
+          "touchpoint": "SpeedRent",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000
+        },
+        {
+          "touchpoint": "Рассылка",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000
+        }
+      ]
+    },
+    "eff_channels": [
       {
-        "touchpoint": "Mango / звонок",
-        "deals": 40,
-        "qualified": 40,
-        "budget": 7180000
+        "source": "Лид не найден / не указан",
+        "ct_leads": 0,
+        "crm_deals": 28,
+        "qualified": 26,
+        "proposal": 7,
+        "meetings": 1,
+        "potential_profit": 12770240,
+        "quality_rate": 0.929
       },
       {
-        "touchpoint": "Tilda / форма сайта",
-        "deals": 21,
-        "qualified": 21,
-        "budget": 4580000
+        "source": "Яндекс Директ / CPC",
+        "ct_leads": 24,
+        "crm_deals": 19,
+        "qualified": 19,
+        "proposal": 5,
+        "meetings": 0,
+        "potential_profit": 4084707,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Не указано",
-        "deals": 18,
-        "qualified": 14,
-        "budget": 3700240
+        "source": "Органика",
+        "ct_leads": 29,
+        "crm_deals": 18,
+        "qualified": 18,
+        "proposal": 4,
+        "meetings": 1,
+        "potential_profit": 5570000,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Ручной ввод CRM",
-        "deals": 16,
-        "qualified": 16,
-        "budget": 5540000
+        "source": "Соцсети / Telegram",
+        "ct_leads": 1,
+        "crm_deals": 15,
+        "qualified": 15,
+        "proposal": 3,
+        "meetings": 1,
+        "potential_profit": 200000,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Мессенджер",
-        "deals": 13,
-        "qualified": 13,
-        "budget": 2470000
+        "source": "Прямой брендовый заход",
+        "ct_leads": 18,
+        "crm_deals": 11,
+        "qualified": 11,
+        "proposal": 2,
+        "meetings": 0,
+        "potential_profit": 1880000,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Почта",
-        "deals": 8,
-        "qualified": 8,
-        "budget": 1460000
+        "source": "Уже обращались",
+        "ct_leads": 0,
+        "crm_deals": 9,
+        "qualified": 9,
+        "proposal": 2,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Спам",
-        "deals": 8,
-        "qualified": 0,
-        "budget": 600000
+        "source": "Рекомендации / рефералы",
+        "ct_leads": 6,
+        "crm_deals": 6,
+        "qualified": 6,
+        "proposal": 2,
+        "meetings": 1,
+        "potential_profit": 1230000,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Агрегатор",
-        "deals": 3,
-        "qualified": 3,
-        "budget": 550000
+        "source": "Почта",
+        "ct_leads": 0,
+        "crm_deals": 6,
+        "qualified": 6,
+        "proposal": 2,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "VK / соцсети",
-        "deals": 2,
+        "source": "Ищу площадку / холодный поиск",
+        "ct_leads": 0,
+        "crm_deals": 4,
+        "qualified": 4,
+        "proposal": 4,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Вед Вед",
+        "ct_leads": 0,
+        "crm_deals": 2,
         "qualified": 2,
-        "budget": 0
+        "proposal": 1,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "Bash Today",
-        "deals": 1,
+        "source": "Агрегатор без уточнения",
+        "ct_leads": 4,
+        "crm_deals": 1,
         "qualified": 1,
-        "budget": 200000
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 400000,
+        "quality_rate": 1.0
       },
       {
-        "touchpoint": "SpeedRent",
-        "deals": 1,
+        "source": "Bash Today",
+        "ct_leads": 0,
+        "crm_deals": 1,
         "qualified": 1,
-        "budget": 200000
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      }
+    ],
+    "eff_managers": [
+      {
+        "manager": "Ирина",
+        "crm_deals": 46,
+        "qualified": 42,
+        "proposal": 12,
+        "meetings": 3,
+        "in_work": 16,
+        "budget": 9900240,
+        "proposal_rate": 0.261,
+        "meeting_rate": 0.065
       },
       {
-        "touchpoint": "Рассылка",
-        "deals": 1,
-        "qualified": 1,
-        "budget": 200000
+        "manager": "Дарья",
+        "crm_deals": 80,
+        "qualified": 73,
+        "proposal": 20,
+        "meetings": 1,
+        "in_work": 21,
+        "budget": 16280000,
+        "proposal_rate": 0.25,
+        "meeting_rate": 0.012
+      },
+      {
+        "manager": "Другие/общий доступ",
+        "crm_deals": 6,
+        "qualified": 5,
+        "proposal": 0,
+        "meetings": 0,
+        "in_work": 1,
+        "budget": 500000,
+        "proposal_rate": 0.0,
+        "meeting_rate": 0.0
+      }
+    ],
+    "conclusions": [
+      {
+        "label": "Больше всего сделок CRM дает источник",
+        "name": "Лид не найден / не указан",
+        "value": 28
+      },
+      {
+        "label": "Больше всего сделок ведет менеджер",
+        "name": "Дарья",
+        "value": 80
+      },
+      {
+        "label": "Самая высокая конверсия во встречи",
+        "name": "Ирина",
+        "value": 6.5
       }
     ]
   },
-  "eff_channels": [
-    {
-      "source": "Лид не найден / не указан",
-      "ct_leads": 0,
-      "crm_deals": 28,
-      "qualified": 26,
-      "proposal": 7,
-      "meetings": 1,
-      "potential_profit": 12770240,
-      "quality_rate": 0.929
+  "previous": {
+    "month": "Май 2026",
+    "source_file": "Ма1 2026 .xlsx",
+    "sheets_used": [
+      "Дашборд",
+      "Каналы",
+      "Этапы_CRM",
+      "Реестр Лиды Деньги Гениально",
+      "График эффективности"
+    ],
+    "key_figures": [
+      {
+        "label": "Потратили всего",
+        "value": 114163.31
+      },
+      {
+        "label": "Лиды Calltouch всего",
+        "value": 49
+      },
+      {
+        "label": "Сделки CRM без дублей",
+        "value": 108
+      },
+      {
+        "label": "Квалифицированные лиды",
+        "value": 85
+      },
+      {
+        "label": "Звонки / касания",
+        "value": 30
+      },
+      {
+        "label": "Сделки в работе",
+        "value": 4
+      },
+      {
+        "label": "Закрыто",
+        "value": 104
+      },
+      {
+        "label": "КП / предложения",
+        "value": 2
+      },
+      {
+        "label": "Встреча проведена / просмотры",
+        "value": 0
+      },
+      {
+        "label": "Брони",
+        "value": 0
+      },
+      {
+        "label": "Договоры",
+        "value": 1
+      },
+      {
+        "label": "Предоплаты / оплаты",
+        "value": 0
+      },
+      {
+        "label": "Реализованные мероприятия",
+        "value": 1
+      },
+      {
+        "label": "Потенциальный бюджет CRM",
+        "value": 11360240
+      }
+    ],
+    "manager_summary": [
+      {
+        "manager": "Ирина",
+        "deals": 38,
+        "share": 0.3518518518518519,
+        "qualified": 29,
+        "proposal": 0,
+        "meetings": 0,
+        "budget": 2370240
+      },
+      {
+        "manager": "Дарья",
+        "deals": 69,
+        "share": 0.6388888888888888,
+        "qualified": 55,
+        "proposal": 2,
+        "meetings": 1,
+        "budget": 8990000
+      },
+      {
+        "manager": "Другие/общий доступ",
+        "deals": 1,
+        "share": 0.009259259259259259,
+        "qualified": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "budget": 0
+      }
+    ],
+    "funnel": [
+      {
+        "stage": "В работе",
+        "count": 4,
+        "share": 0.03703703703703703,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Закрыто",
+        "count": 104,
+        "share": 0.9629629629629629,
+        "comment": "Закрытые сделки"
+      },
+      {
+        "stage": "КП / предложение",
+        "count": 2,
+        "share": 0.01851851851851852,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча назначена",
+        "count": 1,
+        "share": 0.009259259259259259,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча проведена",
+        "count": 0,
+        "share": 0,
+        "comment": "Нет подтвержденных просмотров"
+      },
+      {
+        "stage": "Брони",
+        "count": 0,
+        "share": 0,
+        "comment": "В CRM нет отдельного этапа"
+      },
+      {
+        "stage": "Договоры / предоплаты",
+        "count": 1,
+        "share": 0.009259259259259259,
+        "comment": "Есть договор на согласовании"
+      },
+      {
+        "stage": "Реализовано",
+        "count": 1,
+        "share": 0.009259259259259259,
+        "comment": "Есть этап успешной реализации"
+      }
+    ],
+    "top_sources": [
+      {
+        "source": "Лид не найден / не указан",
+        "ct_leads": 2,
+        "crm_deals": 23,
+        "qualified": 23,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 7750240,
+        "crm_budget": 2540000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Срочно изменить учет источника"
+      },
+      {
+        "source": "Соцсети / Telegram",
+        "ct_leads": 0,
+        "crm_deals": 18,
+        "qualified": 18,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 2270240,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "source": "Органика",
+        "ct_leads": 13,
+        "crm_deals": 10,
+        "qualified": 10,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 1040000,
+        "crm_budget": 1950000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "source": "Яндекс Директ / CPC",
+        "ct_leads": 17,
+        "crm_deals": 11,
+        "qualified": 11,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 400000,
+        "crm_budget": 1240000,
+        "spend": 114163.31,
+        "cpl": 6715.49,
+        "decision": "Изменить: высокий CPL, проверить качество"
+      },
+      {
+        "source": "Уже обращались",
+        "ct_leads": 0,
+        "crm_deals": 5,
+        "qualified": 5,
+        "proposal": 0,
+        "meetings": 1,
+        "ct_revenue": 0,
+        "crm_budget": 1000000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "source": "Почта",
+        "ct_leads": 0,
+        "crm_deals": 5,
+        "qualified": 5,
+        "proposal": 2,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 1000000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "source": "Прямой брендовый заход",
+        "ct_leads": 16,
+        "crm_deals": 5,
+        "qualified": 5,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 590000,
+        "crm_budget": 590000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "source": "Вед Вед",
+        "ct_leads": 0,
+        "crm_deals": 2,
+        "qualified": 2,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "source": "Revel Time / SpeedRent",
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      },
+      {
+        "source": "Ищу площадку / холодный поиск",
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "spend": 0,
+        "cpl": 0,
+        "decision": "Оставить в наблюдении"
+      }
+    ],
+    "channels": [
+      {
+        "group": "Платные",
+        "source": "Яндекс Директ / CPC",
+        "supplier": "Promo Group",
+        "touchpoint": "Сайт / Tilda / Mango",
+        "spend": 114163.31,
+        "ct_leads": 17,
+        "crm_deals": 11,
+        "qualified": 11,
+        "irina": 5,
+        "daria": 6,
+        "other": 0,
+        "calls": 8,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 400000,
+        "crm_budget": 1240000,
+        "cpl": 6715.49,
+        "decision": "Изменить: высокий CPL, проверить качество"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Лид не найден / не указан",
+        "supplier": "",
+        "touchpoint": "Не указано 14, Mango / звонок 9",
+        "spend": 0,
+        "ct_leads": 2,
+        "crm_deals": 23,
+        "qualified": 23,
+        "irina": 9,
+        "daria": 14,
+        "other": 0,
+        "calls": 9,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 7750240,
+        "crm_budget": 2540000,
+        "cpl": 0,
+        "decision": "Срочно изменить учет источника"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Спам / нецелевые",
+        "supplier": "",
+        "touchpoint": "Спам 17, Mango / звонок 5, Не указано 1",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 23,
+        "qualified": 0,
+        "irina": 9,
+        "daria": 14,
+        "other": 0,
+        "calls": 10,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": "Отключить / исключить из анализа"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Соцсети / Telegram",
+        "supplier": "",
+        "touchpoint": "Мессенджер 18",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 18,
+        "qualified": 18,
+        "irina": 6,
+        "daria": 12,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 1,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 2270240,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Органика",
+        "supplier": "",
+        "touchpoint": "Tilda / форма сайта 9, Mango / звонок 1",
+        "spend": 0,
+        "ct_leads": 13,
+        "crm_deals": 10,
+        "qualified": 10,
+        "irina": 6,
+        "daria": 4,
+        "other": 0,
+        "calls": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 1040000,
+        "crm_budget": 1950000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Уже обращались",
+        "supplier": "",
+        "touchpoint": "Ручной ввод CRM 5",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 5,
+        "qualified": 5,
+        "irina": 0,
+        "daria": 5,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 1000000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Прямой брендовый заход",
+        "supplier": "",
+        "touchpoint": "Tilda / форма сайта 3, Mango / звонок 2",
+        "spend": 0,
+        "ct_leads": 16,
+        "crm_deals": 5,
+        "qualified": 5,
+        "irina": 1,
+        "daria": 3,
+        "other": 1,
+        "calls": 2,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 1,
+        "ct_revenue": 590000,
+        "crm_budget": 590000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Почта",
+        "supplier": "",
+        "touchpoint": "Почта 5",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 5,
+        "qualified": 5,
+        "irina": 0,
+        "daria": 5,
+        "other": 0,
+        "calls": 0,
+        "proposal": 2,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 1000000,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Рекомендации / рефералы",
+        "supplier": "",
+        "touchpoint": "Сотрудничество 2, Рекомендации 1",
+        "spend": 0,
+        "ct_leads": 1,
+        "crm_deals": 3,
+        "qualified": 3,
+        "irina": 1,
+        "daria": 2,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": "Усилить"
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Вед Вед",
+        "supplier": "",
+        "touchpoint": "Не указано 2",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 2,
+        "qualified": 2,
+        "irina": 0,
+        "daria": 2,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Revel Time / SpeedRent",
+        "supplier": "",
+        "touchpoint": "SpeedRent 1",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Ищу площадку / холодный поиск",
+        "supplier": "",
+        "touchpoint": "Ручной ввод CRM 1",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 200000,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Агрегатор без уточнения",
+        "supplier": "",
+        "touchpoint": "Агрегатор 1",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "irina": 1,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 170000,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Bash Today",
+        "supplier": "",
+        "touchpoint": "Нет данных",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Рассылка",
+        "supplier": "",
+        "touchpoint": "Нет данных",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Горько",
+        "supplier": "",
+        "touchpoint": "Нет данных",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Портал №1",
+        "supplier": "",
+        "touchpoint": "Нет данных",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      },
+      {
+        "group": "Бесплатные / органика / прочие",
+        "source": "Яндекс Карты",
+        "supplier": "",
+        "touchpoint": "Нет данных",
+        "spend": 0,
+        "ct_leads": 0,
+        "crm_deals": 0,
+        "qualified": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "calls": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "bookings": 0,
+        "paid": 0,
+        "realized": 0,
+        "ct_revenue": 0,
+        "crm_budget": 0,
+        "cpl": 0,
+        "decision": ""
+      }
+    ],
+    "channel_totals": {
+      "ct_leads": 49,
+      "crm_deals": 108,
+      "qualified": 85,
+      "spend": 114163.31,
+      "crm_budget": 11360240,
+      "ct_revenue": 9780240
     },
-    {
-      "source": "Яндекс Директ / CPC",
-      "ct_leads": 24,
-      "crm_deals": 19,
-      "qualified": 19,
-      "proposal": 5,
-      "meetings": 0,
-      "potential_profit": 4084707,
-      "quality_rate": 1.0
+    "stages": [
+      {
+        "stage": "В работе",
+        "total": 4,
+        "irina": 0,
+        "daria": 4,
+        "other": 0,
+        "share": 0.03703703703703703,
+        "budget": 800000,
+        "comment": "Активные этапы"
+      },
+      {
+        "stage": "Закрыто",
+        "total": 104,
+        "irina": 38,
+        "daria": 65,
+        "other": 1,
+        "share": 0.9629629629629629,
+        "budget": 10560240,
+        "comment": "Закрытые сделки"
+      },
+      {
+        "stage": "КП / предложение",
+        "total": 2,
+        "irina": 0,
+        "daria": 2,
+        "other": 0,
+        "share": 0.01851851851851852,
+        "budget": 400000,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча назначена",
+        "total": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "share": 0.009259259259259259,
+        "budget": 200000,
+        "comment": "Активный этап"
+      },
+      {
+        "stage": "Встреча проведена / просмотр",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "Нет подтвержденных просмотров"
+      },
+      {
+        "stage": "Брони",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "В CRM нет отдельного этапа"
+      },
+      {
+        "stage": "Договоры",
+        "total": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "share": 0.009259259259259259,
+        "budget": 200000,
+        "comment": "Есть этап договор на согласовании"
+      },
+      {
+        "stage": "Предоплаты / оплаты",
+        "total": 0,
+        "irina": 0,
+        "daria": 0,
+        "other": 0,
+        "share": 0,
+        "budget": 0,
+        "comment": "Нет подтвержденных оплат"
+      },
+      {
+        "stage": "Реализованные мероприятия",
+        "total": 1,
+        "irina": 0,
+        "daria": 1,
+        "other": 0,
+        "share": 0.009259259259259259,
+        "budget": 190000,
+        "comment": "Есть этап успешной реализации"
+      }
+    ],
+    "source_stages": [
+      {
+        "stage": "Закрыто и не реализовано",
+        "count": 51,
+        "share": 0.4722222222222222,
+        "budget": 2910000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
+        "count": 15,
+        "share": 0.1388888888888889,
+        "budget": 2040240
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не вышли на связь)",
+        "count": 13,
+        "share": 0.1203703703703704,
+        "budget": 1880000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Отмена события)",
+        "count": 9,
+        "share": 0.08333333333333333,
+        "budget": 1000000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
+        "count": 6,
+        "share": 0.05555555555555555,
+        "budget": 1000000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
+        "count": 5,
+        "share": 0.04629629629629629,
+        "budget": 800000
+      },
+      {
+        "stage": "Озвучено предложение",
+        "count": 2,
+        "share": 0.01851851851851852,
+        "budget": 400000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не подходит по расположению)",
+        "count": 2,
+        "share": 0.01851851851851852,
+        "budget": 300000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Дата занята)",
+        "count": 2,
+        "share": 0.01851851851851852,
+        "budget": 440000
+      },
+      {
+        "stage": "Назначена встреча",
+        "count": 1,
+        "share": 0.009259259259259259,
+        "budget": 200000
+      },
+      {
+        "stage": "Успешно реализовано",
+        "count": 1,
+        "share": 0.009259259259259259,
+        "budget": 190000
+      }
+    ],
+    "registry_summary": {
+      "rows": 108,
+      "qualified": 85,
+      "budget": 11360240,
+      "paid": 0,
+      "realized": 1,
+      "by_source": [
+        {
+          "source": "Лид не найден / не указан",
+          "deals": 23,
+          "qualified": 23,
+          "budget": 2540000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Соцсети / Telegram",
+          "deals": 18,
+          "qualified": 18,
+          "budget": 2270240,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Органика",
+          "deals": 10,
+          "qualified": 10,
+          "budget": 1950000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Яндекс Директ / CPC",
+          "deals": 11,
+          "qualified": 11,
+          "budget": 1240000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Уже обращались",
+          "deals": 5,
+          "qualified": 5,
+          "budget": 1000000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Почта",
+          "deals": 5,
+          "qualified": 5,
+          "budget": 1000000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Прямой брендовый заход",
+          "deals": 5,
+          "qualified": 5,
+          "budget": 590000,
+          "paid": 0,
+          "realized": 1
+        },
+        {
+          "source": "Вед Вед",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 200000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Revel Time / SpeedRent",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Ищу площадку / холодный поиск",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Агрегатор без уточнения",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 170000,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Спам / нецелевые",
+          "deals": 23,
+          "qualified": 0,
+          "budget": 0,
+          "paid": 0,
+          "realized": 0
+        },
+        {
+          "source": "Рекомендации / рефералы",
+          "deals": 3,
+          "qualified": 3,
+          "budget": 0,
+          "paid": 0,
+          "realized": 0
+        }
+      ],
+      "by_stage": [
+        {
+          "stage": "Закрыто и не реализовано",
+          "deals": 51,
+          "qualified": 30,
+          "budget": 2910000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
+          "deals": 15,
+          "qualified": 15,
+          "budget": 2040240
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не вышли на связь)",
+          "deals": 13,
+          "qualified": 11,
+          "budget": 1880000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Отмена события)",
+          "deals": 9,
+          "qualified": 9,
+          "budget": 1000000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
+          "deals": 6,
+          "qualified": 6,
+          "budget": 1000000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
+          "deals": 5,
+          "qualified": 5,
+          "budget": 800000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Дата занята)",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 440000
+        },
+        {
+          "stage": "Озвучено предложение",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 400000
+        },
+        {
+          "stage": "Закрыто и не реализовано (Не подходит по расположению)",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 300000
+        },
+        {
+          "stage": "Назначена встреча",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000
+        },
+        {
+          "stage": "Договор на согласовании",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000
+        },
+        {
+          "stage": "Успешно реализовано",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 190000
+        }
+      ],
+      "by_touchpoint": [
+        {
+          "touchpoint": "Mango / звонок",
+          "deals": 24,
+          "qualified": 19,
+          "budget": 1930000
+        },
+        {
+          "touchpoint": "Мессенджер",
+          "deals": 18,
+          "qualified": 18,
+          "budget": 2270240
+        },
+        {
+          "touchpoint": "Не указано",
+          "deals": 17,
+          "qualified": 16,
+          "budget": 1640000
+        },
+        {
+          "touchpoint": "Спам",
+          "deals": 17,
+          "qualified": 0,
+          "budget": 0
+        },
+        {
+          "touchpoint": "Tilda / форма сайта",
+          "deals": 15,
+          "qualified": 15,
+          "budget": 2750000
+        },
+        {
+          "touchpoint": "Ручной ввод CRM",
+          "deals": 7,
+          "qualified": 7,
+          "budget": 1400000
+        },
+        {
+          "touchpoint": "Почта",
+          "deals": 5,
+          "qualified": 5,
+          "budget": 1000000
+        },
+        {
+          "touchpoint": "Сотрудничество",
+          "deals": 2,
+          "qualified": 2,
+          "budget": 0
+        },
+        {
+          "touchpoint": "SpeedRent",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 200000
+        },
+        {
+          "touchpoint": "Агрегатор",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 170000
+        },
+        {
+          "touchpoint": "Рекомендации",
+          "deals": 1,
+          "qualified": 1,
+          "budget": 0
+        }
+      ]
     },
-    {
-      "source": "Органика",
-      "ct_leads": 29,
-      "crm_deals": 18,
-      "qualified": 18,
-      "proposal": 4,
-      "meetings": 1,
-      "potential_profit": 5570000,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Соцсети / Telegram",
-      "ct_leads": 1,
-      "crm_deals": 15,
-      "qualified": 15,
-      "proposal": 3,
-      "meetings": 1,
-      "potential_profit": 200000,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Прямой брендовый заход",
-      "ct_leads": 18,
-      "crm_deals": 11,
-      "qualified": 11,
-      "proposal": 2,
-      "meetings": 0,
-      "potential_profit": 1880000,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Уже обращались",
-      "ct_leads": 0,
-      "crm_deals": 9,
-      "qualified": 9,
-      "proposal": 2,
-      "meetings": 0,
-      "potential_profit": 0,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Рекомендации / рефералы",
-      "ct_leads": 6,
-      "crm_deals": 6,
-      "qualified": 6,
-      "proposal": 2,
-      "meetings": 1,
-      "potential_profit": 1230000,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Почта",
-      "ct_leads": 0,
-      "crm_deals": 6,
-      "qualified": 6,
-      "proposal": 2,
-      "meetings": 0,
-      "potential_profit": 0,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Ищу площадку / холодный поиск",
-      "ct_leads": 0,
-      "crm_deals": 4,
-      "qualified": 4,
-      "proposal": 4,
-      "meetings": 0,
-      "potential_profit": 0,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Вед Вед",
-      "ct_leads": 0,
-      "crm_deals": 2,
-      "qualified": 2,
-      "proposal": 1,
-      "meetings": 0,
-      "potential_profit": 0,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Агрегатор без уточнения",
-      "ct_leads": 4,
-      "crm_deals": 1,
-      "qualified": 1,
-      "proposal": 0,
-      "meetings": 0,
-      "potential_profit": 400000,
-      "quality_rate": 1.0
-    },
-    {
-      "source": "Bash Today",
-      "ct_leads": 0,
-      "crm_deals": 1,
-      "qualified": 1,
-      "proposal": 0,
-      "meetings": 0,
-      "potential_profit": 0,
-      "quality_rate": 1.0
-    }
-  ],
-  "eff_managers": [
-    {
-      "manager": "Ирина",
-      "crm_deals": 46,
-      "qualified": 42,
-      "proposal": 12,
-      "meetings": 3,
-      "in_work": 16,
-      "budget": 9900240,
-      "proposal_rate": 0.261,
-      "meeting_rate": 0.065
-    },
-    {
-      "manager": "Дарья",
-      "crm_deals": 80,
-      "qualified": 73,
-      "proposal": 20,
-      "meetings": 1,
-      "in_work": 21,
-      "budget": 16280000,
-      "proposal_rate": 0.25,
-      "meeting_rate": 0.012
-    },
-    {
-      "manager": "Другие/общий доступ",
-      "crm_deals": 6,
-      "qualified": 5,
-      "proposal": 0,
-      "meetings": 0,
-      "in_work": 1,
-      "budget": 500000,
-      "proposal_rate": 0.0,
-      "meeting_rate": 0.0
-    }
-  ],
-  "conclusions": [
-    {
-      "label": "Больше всего сделок CRM дает источник",
-      "name": "Лид не найден / не указан",
-      "value": 28
-    },
-    {
-      "label": "Больше всего сделок ведет менеджер",
-      "name": "Дарья",
-      "value": 80
-    },
-    {
-      "label": "Самая высокая конверсия во встречи",
-      "name": "Ирина",
-      "value": 6.5
-    }
-  ]
+    "eff_channels": [
+      {
+        "source": "Лид не найден / не указан",
+        "ct_leads": 2,
+        "crm_deals": 23,
+        "qualified": 23,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 7750240,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Спам / нецелевые",
+        "ct_leads": 0,
+        "crm_deals": 23,
+        "qualified": 0,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 0.0
+      },
+      {
+        "source": "Соцсети / Telegram",
+        "ct_leads": 0,
+        "crm_deals": 18,
+        "qualified": 18,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Яндекс Директ / CPC",
+        "ct_leads": 17,
+        "crm_deals": 11,
+        "qualified": 11,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 285836.69,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Органика",
+        "ct_leads": 13,
+        "crm_deals": 10,
+        "qualified": 10,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 1040000,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Уже обращались",
+        "ct_leads": 0,
+        "crm_deals": 5,
+        "qualified": 5,
+        "proposal": 0,
+        "meetings": 1,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Прямой брендовый заход",
+        "ct_leads": 16,
+        "crm_deals": 5,
+        "qualified": 5,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 590000,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Почта",
+        "ct_leads": 0,
+        "crm_deals": 5,
+        "qualified": 5,
+        "proposal": 2,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Рекомендации / рефералы",
+        "ct_leads": 1,
+        "crm_deals": 3,
+        "qualified": 3,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Вед Вед",
+        "ct_leads": 0,
+        "crm_deals": 2,
+        "qualified": 2,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Revel Time / SpeedRent",
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      },
+      {
+        "source": "Ищу площадку / холодный поиск",
+        "ct_leads": 0,
+        "crm_deals": 1,
+        "qualified": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "potential_profit": 0,
+        "quality_rate": 1.0
+      }
+    ],
+    "eff_managers": [
+      {
+        "manager": "Ирина",
+        "crm_deals": 38,
+        "qualified": 29,
+        "proposal": 0,
+        "meetings": 0,
+        "in_work": 0,
+        "budget": 2370240,
+        "proposal_rate": 0.0,
+        "meeting_rate": 0.0
+      },
+      {
+        "manager": "Дарья",
+        "crm_deals": 69,
+        "qualified": 55,
+        "proposal": 2,
+        "meetings": 1,
+        "in_work": 4,
+        "budget": 8990000,
+        "proposal_rate": 0.028999999999999998,
+        "meeting_rate": 0.013999999999999999
+      },
+      {
+        "manager": "Другие/общий доступ",
+        "crm_deals": 1,
+        "qualified": 1,
+        "proposal": 0,
+        "meetings": 0,
+        "in_work": 0,
+        "budget": 0,
+        "proposal_rate": 0.0,
+        "meeting_rate": 0.0
+      }
+    ],
+    "conclusions": [
+      {
+        "label": "Больше всего сделок CRM дает источник",
+        "name": "Лид не найден / не указан",
+        "value": 23
+      },
+      {
+        "label": "Больше всего сделок ведет менеджер",
+        "name": "Дарья",
+        "value": 69
+      },
+      {
+        "label": "Самая высокая конверсия во встречи",
+        "name": "Дарья",
+        "value": 1.4
+      }
+    ]
+  }
 };
+const dashboardData = reportData.current;
+const comparisonData = reportData.previous;
 
 const money = new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 });
 const number = new Intl.NumberFormat("ru-RU");
@@ -2335,11 +3653,12 @@ const percent = new Intl.NumberFormat("ru-RU", { style: "percent", maximumFracti
 function formatMoney(value) { return money.format(Math.round(Number(value || 0))); }
 function formatNumber(value) { return number.format(Math.round(Number(value || 0))); }
 function formatPercent(value) { return percent.format(Number(value || 0)); }
+function formatMillions(value) { return `${(Number(value || 0) / 1000000).toLocaleString("ru-RU", { maximumFractionDigits: 2 })} млн ₽`; }
 function safeRate(part, total) { return total ? part / total : 0; }
-
-function key(label) {
-  return dashboardData.key_figures.find((item) => item.label === label)?.value || 0;
-}
+function key(label, data = dashboardData) { return data.key_figures.find((item) => item.label === label)?.value || 0; }
+function diffValue(current, previous) { return Number(current || 0) - Number(previous || 0); }
+function diffClass(current, previous, inverse = false) { const diff = diffValue(current, previous); return diff === 0 ? "" : (inverse ? diff < 0 : diff > 0) ? "positive" : "negative"; }
+function diffText(current, previous, formatter = formatNumber) { const diff = diffValue(current, previous); const sign = diff > 0 ? "+" : ""; return `${sign}${formatter(diff)}`; }
 
 function renderKpis() {
   const spend = key("Потратили всего");
@@ -2348,188 +3667,56 @@ function renderKpis() {
   const qualified = key("Квалифицированные лиды");
   const inWork = key("Сделки в работе");
   const budget = key("Потенциальный бюджет CRM");
+  const prevSpend = key("Потратили всего", comparisonData);
+  const prevDeals = key("Сделки CRM без дублей", comparisonData);
   const items = [
-    ["Расход", formatMoney(spend), "реклама за июнь", "₽", "orange"],
-    ["Лиды CT", formatNumber(ctLeads), "все входящие лиды", "◌", "blue"],
-    ["Сделки CRM", formatNumber(crmDeals), "без дублей", "▣", "violet"],
+    ["Расход", formatMoney(spend), `к маю ${diffText(spend, prevSpend, formatMoney)}`, "₽", "orange"],
+    ["Лиды CT", formatNumber(ctLeads), `май: ${formatNumber(key("Лиды Calltouch всего", comparisonData))}`, "◌", "blue"],
+    ["Сделки CRM", formatNumber(crmDeals), `к маю ${diffText(crmDeals, prevDeals)}`, "▣", "violet"],
     ["Квалификация", formatPercent(safeRate(qualified, crmDeals)), `${formatNumber(qualified)} квал.`, "✓", "green"],
-    ["В работе", formatNumber(inWork), "активные сделки", "▽", "yellow"],
-    ["Бюджет CRM", formatMoney(budget), "потенциал сделок", "▥", "green"]
+    ["В работе", formatNumber(inWork), `май: ${formatNumber(key("Сделки в работе", comparisonData))}`, "▽", "yellow"],
+    ["Бюджет CRM", formatMillions(budget), `к маю ${diffText(budget, key("Потенциальный бюджет CRM", comparisonData), formatMillions)}`, "▥", "green"]
   ];
   document.querySelector("#kpis").innerHTML = items.map(([title, value, trend, icon, tone], index) => `
     <article class="kpi">
       <div class="kpi-top"><span>${title}</span><span class="kpi-icon" style="background: var(--${tone}-soft); color: var(--${tone});">${icon}</span></div>
-      <strong>${value}</strong>
-      <span class="trend">${trend}</span>
-      ${sparkline(index)}
-    </article>
-  `).join("");
+      <strong>${value}</strong><span class="trend">${trend}</span>${sparkline(index)}
+    </article>`).join("");
 }
+function sparkline(offset) { const values = [12,18,15,24,20,31,28,36].map((v)=>v+offset*2); const points = values.map((v,i)=>`${i*28},${42-v}`).join(" "); return `<svg class="spark" viewBox="0 0 200 46" preserveAspectRatio="none"><polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2"/></svg>`; }
 
-function sparkline(offset) {
-  const values = [12, 18, 15, 24, 20, 31, 28, 36].map((value) => value + offset * 2);
-  const points = values.map((value, index) => `${index * 28},${42 - value}`).join(" ");
-  return `<svg class="spark" viewBox="0 0 200 46" preserveAspectRatio="none"><polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
+function renderComparison() {
+  const rows = [
+    ["Расход", key("Потратили всего"), key("Потратили всего", comparisonData), formatMoney, true],
+    ["Лиды CT", key("Лиды Calltouch всего"), key("Лиды Calltouch всего", comparisonData), formatNumber],
+    ["Сделки CRM", key("Сделки CRM без дублей"), key("Сделки CRM без дублей", comparisonData), formatNumber],
+    ["Квалифицированные", key("Квалифицированные лиды"), key("Квалифицированные лиды", comparisonData), formatNumber],
+    ["В работе", key("Сделки в работе"), key("Сделки в работе", comparisonData), formatNumber],
+    ["КП", key("КП / предложения"), key("КП / предложения", comparisonData), formatNumber],
+    ["Бюджет CRM", key("Потенциальный бюджет CRM"), key("Потенциальный бюджет CRM", comparisonData), formatMoney]
+  ];
+  document.querySelector("#comparisonRows").innerHTML = rows.map(([label, current, previous, formatter, inverse]) => `
+    <tr><td>${label}</td><td>${formatter(previous)}</td><td>${formatter(current)}</td><td class="${diffClass(current, previous, inverse)}">${diffText(current, previous, formatter)}</td></tr>
+  `).join("");
 }
 
 function renderBarChart(selector, rows, config) {
   const max = Math.max(1, ...rows.map((row) => Number(row[config.value] || 0)));
   document.querySelector(selector).innerHTML = rows.map((row) => {
-    const value = Number(row[config.value] || 0);
-    const width = Math.max(3, (value / max) * 100);
-    const secondary = config.secondary ? Number(row[config.secondary] || 0) : null;
-    return `
-      <div class="chart-row">
-        <div class="chart-name">${row[config.label]}</div>
-        <div class="chart-track"><div class="chart-fill" style="width:${width}%"></div></div>
-        <b>${config.format ? config.format(value) : formatNumber(value)}</b>
-        ${secondary === null ? "" : `<span>${config.secondaryLabel} ${formatNumber(secondary)}</span>`}
-      </div>
-    `;
+    const value = Number(row[config.value] || 0); const width = Math.max(3, (value / max) * 100); const secondary = config.secondary ? Number(row[config.secondary] || 0) : null;
+    return `<div class="chart-row"><div class="chart-name">${row[config.label]}</div><div class="chart-track"><div class="chart-fill" style="width:${width}%"></div></div><b>${config.format ? config.format(value) : formatNumber(value)}</b>${secondary === null ? "" : `<span>${config.secondaryLabel} ${formatNumber(secondary)}</span>`}</div>`;
   }).join("");
 }
-
-function renderFunnel() {
-  const max = Math.max(1, ...dashboardData.funnel.map((row) => row.count));
-  document.querySelector("#funnelChart").innerHTML = dashboardData.funnel.map((row) => `
-    <div class="funnel-row">
-      <span>${row.stage}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(3, row.count / max * 100)}%"></div></div>
-      <b>${formatNumber(row.count)}</b>
-      <span>${formatPercent(row.share)}</span>
-    </div>
-  `).join("");
-}
-
-function renderTopSources() {
-  document.querySelector("#topSourceRows").innerHTML = dashboardData.top_sources.map((row) => `
-    <tr>
-      <td>${row.source}</td>
-      <td>${formatNumber(row.ct_leads)}</td>
-      <td>${formatNumber(row.crm_deals)}</td>
-      <td>${formatNumber(row.qualified)}</td>
-      <td>${formatNumber(row.proposal)}</td>
-      <td>${formatNumber(row.meetings)}</td>
-      <td>${formatMoney(row.ct_revenue)}</td>
-      <td>${formatMoney(row.crm_budget)}</td>
-      <td>${row.spend ? formatMoney(row.spend) : "—"}</td>
-      <td>${row.decision}</td>
-    </tr>
-  `).join("");
-}
-
-function renderChannels() {
-  document.querySelector("#channelRows").innerHTML = dashboardData.channels.map((row) => `
-    <tr>
-      <td>${row.group}</td>
-      <td>${row.source}</td>
-      <td>${row.touchpoint || "—"}</td>
-      <td>${row.spend ? formatMoney(row.spend) : "—"}</td>
-      <td>${formatNumber(row.ct_leads)}</td>
-      <td>${formatNumber(row.crm_deals)}</td>
-      <td>${formatNumber(row.qualified)}</td>
-      <td>${formatNumber(row.irina)}</td>
-      <td>${formatNumber(row.daria)}</td>
-      <td>${formatNumber(row.proposal)}</td>
-      <td>${formatNumber(row.meetings)}</td>
-      <td>${formatMoney(row.ct_revenue)}</td>
-      <td>${formatMoney(row.crm_budget)}</td>
-      <td>${row.cpl ? formatMoney(row.cpl) : "—"}</td>
-      <td>${row.decision || "—"}</td>
-    </tr>
-  `).join("");
-}
-
-function renderStages() {
-  document.querySelector("#stageRows").innerHTML = dashboardData.stages.map((row) => `
-    <tr>
-      <td>${row.stage}</td>
-      <td>${formatNumber(row.total)}</td>
-      <td>${formatNumber(row.irina)}</td>
-      <td>${formatNumber(row.daria)}</td>
-      <td>${formatNumber(row.other)}</td>
-      <td>${formatPercent(row.share)}</td>
-      <td>${formatMoney(row.budget)}</td>
-      <td>${row.comment}</td>
-    </tr>
-  `).join("");
-  document.querySelector("#sourceStageRows").innerHTML = dashboardData.source_stages.map((row) => `
-    <tr><td>${row.stage}</td><td>${formatNumber(row.count)}</td><td>${formatPercent(row.share)}</td><td>${formatMoney(row.budget)}</td></tr>
-  `).join("");
-}
-
-function renderManagers() {
-  const totalDeals = dashboardData.manager_summary.reduce((sum, row) => sum + row.deals, 0);
-  const managerByName = new Map(dashboardData.eff_managers.map((row) => [row.manager, row]));
-  document.querySelector("#managerRows").innerHTML = dashboardData.manager_summary.map((row) => {
-    const eff = managerByName.get(row.manager) || {};
-    return `
-      <tr>
-        <td>${row.manager}</td>
-        <td>${formatNumber(row.deals)}</td>
-        <td>${formatPercent(row.share || safeRate(row.deals, totalDeals))}</td>
-        <td>${formatNumber(row.qualified)}</td>
-        <td>${formatNumber(row.proposal)}</td>
-        <td>${formatNumber(row.meetings)}</td>
-        <td>${formatNumber(eff.in_work || 0)}</td>
-        <td>${formatMoney(row.budget)}</td>
-        <td>${formatPercent(eff.proposal_rate || safeRate(row.proposal, row.deals))}</td>
-        <td>${formatPercent(eff.meeting_rate || safeRate(row.meetings, row.deals))}</td>
-      </tr>
-    `;
-  }).join("");
-}
-
-function renderRegistry() {
-  const s = dashboardData.registry_summary;
-  document.querySelector("#registrySummary").innerHTML = [
-    ["Строк в реестре", formatNumber(s.rows)],
-    ["Квалифицировано", formatNumber(s.qualified)],
-    ["Бюджет CRM", formatMoney(s.budget)],
-    ["Оплачено", formatMoney(s.paid)],
-    ["Реализовано", formatNumber(s.realized)]
-  ].map(([label, value]) => `<div class="mini-card"><span>${label}</span><strong>${value}</strong></div>`).join("");
-
-  document.querySelector("#registrySourceRows").innerHTML = s.by_source.slice(0, 18).map((row) => `
-    <tr><td>${row.source}</td><td>${formatNumber(row.deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatMoney(row.budget)}</td><td>${formatMoney(row.paid)}</td><td>${formatNumber(row.realized)}</td></tr>
-  `).join("");
-  document.querySelector("#touchpointRows").innerHTML = s.by_touchpoint.map((row) => `
-    <tr><td>${row.touchpoint}</td><td>${formatNumber(row.deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatMoney(row.budget)}</td></tr>
-  `).join("");
-}
-
-function renderConclusions() {
-  document.querySelector("#conclusions").innerHTML = dashboardData.conclusions.map((row) => `
-    <div class="decision"><b>${row.label}</b><strong>${row.name}</strong><span>${typeof row.value === "number" ? formatNumber(row.value) : row.value}</span></div>
-  `).join("");
-}
-
-function wireNavigation() {
-  document.querySelectorAll(".nav-item").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.body.className = button.dataset.view === "overview" ? "" : `view-${button.dataset.view}`;
-      document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item === button));
-    });
-  });
-}
-
-function render() {
-  document.querySelector("#sourceNote").textContent = `Источник: ${dashboardData.source_file} · вкладки: ${dashboardData.sheets_used.join(", ")}`;
-  renderKpis();
-  renderFunnel();
-  renderTopSources();
-  renderChannels();
-  renderStages();
-  renderManagers();
-  renderRegistry();
-  renderConclusions();
-  renderBarChart("#channelChart", dashboardData.eff_channels, { label: "source", value: "crm_deals", secondary: "qualified", secondaryLabel: "квал.", format: formatNumber });
-  renderBarChart("#stageChart", dashboardData.stages.filter((row) => row.total > 0), { label: "stage", value: "total", secondary: "budget", secondaryLabel: "бюджет", format: formatNumber });
-  renderBarChart("#managerChart", dashboardData.eff_managers, { label: "manager", value: "crm_deals", secondary: "proposal", secondaryLabel: "КП", format: formatNumber });
-}
-
-wireNavigation();
-render();
+function renderFunnel() { const max = Math.max(1, ...dashboardData.funnel.map((row) => row.count)); document.querySelector("#funnelChart").innerHTML = dashboardData.funnel.map((row) => `<div class="funnel-row"><span>${row.stage}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(3, row.count / max * 100)}%"></div></div><b>${formatNumber(row.count)}</b><span>${formatPercent(row.share)}</span></div>`).join(""); }
+function renderTopSources() { document.querySelector("#topSourceRows").innerHTML = dashboardData.top_sources.map((row) => `<tr><td>${row.source}</td><td>${formatNumber(row.ct_leads)}</td><td>${formatNumber(row.crm_deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatNumber(row.proposal)}</td><td>${formatNumber(row.meetings)}</td><td>${formatMoney(row.ct_revenue)}</td><td>${formatMoney(row.crm_budget)}</td><td>${row.spend ? formatMoney(row.spend) : "—"}</td><td>${row.decision}</td></tr>`).join(""); }
+function renderChannels() { document.querySelector("#channelRows").innerHTML = dashboardData.channels.map((row) => `<tr><td>${row.group}</td><td>${row.source}</td><td>${row.touchpoint || "—"}</td><td>${row.spend ? formatMoney(row.spend) : "—"}</td><td>${formatNumber(row.ct_leads)}</td><td>${formatNumber(row.crm_deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatNumber(row.irina)}</td><td>${formatNumber(row.daria)}</td><td>${formatNumber(row.proposal)}</td><td>${formatNumber(row.meetings)}</td><td>${formatMoney(row.ct_revenue)}</td><td>${formatMoney(row.crm_budget)}</td><td>${row.cpl ? formatMoney(row.cpl) : "—"}</td><td>${row.decision || "—"}</td></tr>`).join(""); }
+function renderStages() { document.querySelector("#stageRows").innerHTML = dashboardData.stages.map((row) => `<tr><td>${row.stage}</td><td>${formatNumber(row.total)}</td><td>${formatNumber(row.irina)}</td><td>${formatNumber(row.daria)}</td><td>${formatNumber(row.other)}</td><td>${formatPercent(row.share)}</td><td>${formatMoney(row.budget)}</td><td>${row.comment}</td></tr>`).join(""); document.querySelector("#sourceStageRows").innerHTML = dashboardData.source_stages.map((row) => `<tr><td>${row.stage}</td><td>${formatNumber(row.count)}</td><td>${formatPercent(row.share)}</td><td>${formatMoney(row.budget)}</td></tr>`).join(""); }
+function renderManagers() { const totalDeals = dashboardData.manager_summary.reduce((sum, row) => sum + row.deals, 0); const managerByName = new Map(dashboardData.eff_managers.map((row) => [row.manager, row])); document.querySelector("#managerRows").innerHTML = dashboardData.manager_summary.map((row) => { const eff = managerByName.get(row.manager) || {}; return `<tr><td>${row.manager}</td><td>${formatNumber(row.deals)}</td><td>${formatPercent(row.share || safeRate(row.deals, totalDeals))}</td><td>${formatNumber(row.qualified)}</td><td>${formatNumber(row.proposal)}</td><td>${formatNumber(row.meetings)}</td><td>${formatNumber(eff.in_work || 0)}</td><td>${formatMoney(row.budget)}</td><td>${formatPercent(eff.proposal_rate || safeRate(row.proposal, row.deals))}</td><td>${formatPercent(eff.meeting_rate || safeRate(row.meetings, row.deals))}</td></tr>`; }).join(""); }
+function renderRegistry() { const s = dashboardData.registry_summary; document.querySelector("#registrySummary").innerHTML = [["Строк в реестре", formatNumber(s.rows)], ["Квалифицировано", formatNumber(s.qualified)], ["Бюджет CRM", formatMoney(s.budget)], ["Оплачено", formatMoney(s.paid)], ["Реализовано", formatNumber(s.realized)]].map(([label, value]) => `<div class="mini-card"><span>${label}</span><strong>${value}</strong></div>`).join(""); document.querySelector("#registrySourceRows").innerHTML = s.by_source.slice(0, 18).map((row) => `<tr><td>${row.source}</td><td>${formatNumber(row.deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatMoney(row.budget)}</td><td>${formatMoney(row.paid)}</td><td>${formatNumber(row.realized)}</td></tr>`).join(""); document.querySelector("#touchpointRows").innerHTML = s.by_touchpoint.map((row) => `<tr><td>${row.touchpoint}</td><td>${formatNumber(row.deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatMoney(row.budget)}</td></tr>`).join(""); }
+function renderConclusions() { document.querySelector("#conclusions").innerHTML = dashboardData.conclusions.map((row) => `<div class="decision"><b>${row.label}</b><strong>${row.name}</strong><span>${typeof row.value === "number" ? formatNumber(row.value) : row.value}</span></div>`).join(""); }
+function wireNavigation() { document.querySelectorAll(".nav-item").forEach((button) => { button.addEventListener("click", () => { document.body.className = button.dataset.view === "overview" ? "" : `view-${button.dataset.view}`; document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item === button)); }); }); }
+function render() { document.querySelector("#sourceNote").textContent = `Источник: ${dashboardData.source_file} + сравнение с ${comparisonData.source_file}`; renderKpis(); renderComparison(); renderFunnel(); renderTopSources(); renderChannels(); renderStages(); renderManagers(); renderRegistry(); renderConclusions(); renderBarChart("#channelChart", dashboardData.eff_channels, { label: "source", value: "crm_deals", secondary: "qualified", secondaryLabel: "квал.", format: formatNumber }); renderBarChart("#stageChart", dashboardData.stages.filter((row) => row.total > 0), { label: "stage", value: "total", secondary: "budget", secondaryLabel: "бюджет", format: formatNumber }); renderBarChart("#managerChart", dashboardData.eff_managers, { label: "manager", value: "crm_deals", secondary: "proposal", secondaryLabel: "КП", format: formatNumber }); }
+wireNavigation(); render();
 
     </script>
   </body>
