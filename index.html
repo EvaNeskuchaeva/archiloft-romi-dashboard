@@ -3,46 +3,789 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Archiloft ROMI Dashboard</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Archiloft CRM Dashboard</title>
+    <style>
+:root {
+  --bg: #f6f7fb;
+  --panel: #ffffff;
+  --ink: #171925;
+  --muted: #707789;
+  --line: #e9ebf2;
+  --violet: #7257d8;
+  --violet-soft: #ece8ff;
+  --green: #0f9f69;
+  --green-soft: #e6f7ef;
+  --orange: #f28b3c;
+  --orange-soft: #fff0e5;
+  --blue: #2694d8;
+  --blue-soft: #e7f5fd;
+  --yellow: #c99a04;
+  --yellow-soft: #fff7d7;
+  --red: #d64545;
+  --red-soft: #fdecec;
+  --shadow: 0 14px 40px rgba(31, 37, 68, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+select,
+input[type="date"],
+.import-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 40px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 244px;
+  padding: 28px 20px;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.brand strong {
+  display: block;
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+.brand span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.nav {
+  display: grid;
+  gap: 7px;
+}
+
+.nav-item {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: #343849;
+  padding: 12px 14px;
+}
+
+.nav-item.active {
+  background: var(--violet-soft);
+  color: var(--violet);
+  font-weight: 700;
+}
+
+.topbar p,
+.studio-head p {
+  color: var(--muted);
+}
+
+.app {
+  margin-left: 244px;
+  padding: 24px 28px 36px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+.toolbar,
+.studio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.ghost {
+  color: var(--muted);
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.kpi,
+.panel,
+.data-studio {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.kpi {
+  padding: 18px;
+  min-height: 138px;
+  display: grid;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.kpi-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.kpi-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.kpi strong {
+  font-size: 21px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.trend {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.spark {
+  width: 100%;
+  height: 30px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.panel {
+  grid-column: span 4;
+  min-height: 270px;
+  padding: 18px;
+  overflow: hidden;
+}
+
+.panel.wide {
+  grid-column: span 7;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.panel-head span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.line-chart {
+  height: 270px;
+  min-width: 0;
+}
+
+.empty-chart {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.axis {
+  color: #cfd3de;
+}
+
+.chart-label {
+  fill: #62687a;
+  font-size: 11px;
+}
+
+.value-label {
+  font-weight: 700;
+}
+
+.month-label {
+  fill: #707789;
+}
+
+.funnel {
+  display: grid;
+  gap: 8px;
+}
+
+.funnel-row {
+  display: grid;
+  grid-template-columns: 132px 1fr 70px 62px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.bar-track {
+  height: 22px;
+  border-radius: 5px;
+  background: #f0edf9;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #8b73e6, #bbaaf4);
+}
+
+.table-wrap,
+.editable-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.wide table {
+  min-width: 860px;
+}
+
+.panel[data-panel="advertising"] table {
+  min-width: 1360px;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 9px 7px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.positive {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.negative {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(30px, 1fr));
+  gap: 8px;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 13px;
+  background: #f3f5f8;
+  color: #566074;
+}
+
+.day.booked {
+  background: #bdebd4;
+  color: #0f7f55;
+}
+
+.day.hold {
+  background: #fff0a8;
+  color: #8e7100;
+}
+
+.metric-list,
+.finance-rows,
+.forecast,
+.repeat {
+  display: grid;
+  gap: 13px;
+}
+
+.metric-row,
+.finance-row,
+.forecast-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.mini-line {
+  width: 100px;
+  height: 24px;
+}
+
+.finance-box {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.donut {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.donut::after {
+  content: "";
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.donut-label {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.donut-label b {
+  display: block;
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.repeat {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.mini-card {
+  background: #f7f8fc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 78px;
+}
+
+.mini-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.mini-card strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.integration-box {
+  display: grid;
+  gap: 14px;
+}
+
+.status-line {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--violet);
+  border-radius: 8px;
+  background: #f8f7ff;
+  padding: 12px 14px;
+  font-weight: 700;
+}
+
+.status-line.good {
+  border-left-color: var(--green);
+  background: #f4fbf7;
+}
+
+.muted-note {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.source-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.source-tag.paid {
+  color: var(--orange);
+  background: var(--orange-soft);
+}
+
+.source-tag.free {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.source-tag.untracked {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.decision-list {
+  display: grid;
+  gap: 10px;
+}
+
+.decision {
+  display: grid;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcff;
+  padding: 12px;
+}
+
+.decision b {
+  color: var(--violet);
+}
+
+.decision strong {
+  font-size: 15px;
+}
+
+.decision span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.repeat-card {
+  background: #f7f8fc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.repeat-card strong {
+  display: block;
+  font-size: 26px;
+  color: var(--violet);
+}
+
+.forecast-row .bar-track {
+  width: 110px;
+  height: 8px;
+}
+
+.bar-chart {
+  display: grid;
+  gap: 11px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: minmax(190px, 1.35fr) minmax(160px, 2fr) minmax(80px, auto) minmax(92px, auto);
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.chart-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-track {
+  height: 16px;
+  border-radius: 999px;
+  background: #eef0f7;
+  overflow: hidden;
+}
+
+.chart-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7257d8, #24a273);
+}
+
+.chart-row b {
+  text-align: right;
+}
+
+.chart-row span {
+  color: var(--muted);
+}
+
+.data-studio {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.studio-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.studio-head.compact {
+  margin-top: 20px;
+}
+
+.manual-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.import-btn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.import-btn input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.editable input,
+.editable select {
+  width: 100%;
+  min-width: 110px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.delete-row {
+  color: var(--red);
+  border: 0;
+  background: #fff4f4;
+  min-height: 34px;
+}
+
+.manager-edit {
+  width: 88px;
+  min-width: 72px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 8px;
+}
+
+body.view-data .dashboard-grid,
+body.view-data .kpis {
+  display: none;
+}
+
+body:not(.view-data) .data-studio {
+  display: none;
+}
+
+body.view-funnel .panel:not([data-panel="funnel"]),
+body.view-channels .panel:not([data-panel="channels"]),
+body.view-managers .panel:not([data-panel="managers"]),
+body.view-stages .panel:not([data-panel="stages"]),
+body.view-registry .panel:not([data-panel="registry"]) {
+  display: none;
+}
+
+body.view-funnel .panel,
+body.view-channels .panel,
+body.view-managers .panel,
+body.view-stages .panel,
+body.view-registry .panel {
+  grid-column: span 6;
+}
+
+body.view-funnel .panel.wide,
+body.view-channels .panel.wide,
+body.view-managers .panel.wide,
+body.view-stages .panel.wide,
+body.view-registry .panel.wide {
+  grid-column: span 12;
+}
+
+@media (max-width: 1180px) {
+  .kpis {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .panel,
+  .panel.wide {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 820px) {
+  .sidebar {
+    position: static;
+    width: auto;
+    padding: 18px;
+  }
+
+  .app {
+    margin-left: 0;
+    padding: 18px;
+  }
+
+  .topbar,
+  .studio-head {
+    display: grid;
+  }
+
+  .toolbar,
+  .studio-actions {
+    justify-content: start;
+  }
+
+  .kpis,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel,
+  .panel.wide,
+  body.view-funnel .panel,
+  body.view-channels .panel,
+  body.view-managers .panel,
+  body.view-stages .panel,
+  body.view-registry .panel {
+    grid-column: auto;
+  }
+
+  .chart-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .chart-row b {
+    text-align: left;
+  }
+
+  .finance-box,
+  .repeat,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.view-funnel .panel,
+  body.view-channels .panel,
+  body.view-managers .panel,
+  body.view-stages .panel,
+  body.view-registry .panel,
+  body.view-funnel .panel.wide,
+  body.view-channels .panel.wide,
+  body.view-managers .panel.wide,
+  body.view-stages .panel.wide,
+  body.view-registry .panel.wide {
+    grid-column: auto;
+  }
+}
+
+    </style>
   </head>
   <body>
     <aside class="sidebar">
       <div class="brand">
         <strong>ARCHILOFT</strong>
-        <span>пространство для событий</span>
+        <span>цифровой дашборд</span>
       </div>
       <nav class="nav" aria-label="Разделы">
         <button class="nav-item active" data-view="overview">⌂ Обзор</button>
-        <button class="nav-item" data-view="funnel">▽ Воронка</button>
         <button class="nav-item" data-view="channels">◌ Каналы</button>
-        <button class="nav-item" data-view="events">▣ Мероприятия</button>
-        <button class="nav-item" data-view="advertising">▤ Реклама</button>
-        <button class="nav-item" data-view="amortization">◍ Амортизация</button>
-        <button class="nav-item" data-view="finance">₽ Финансы</button>
-        <button class="nav-item" data-view="data">✎ Данные</button>
+        <button class="nav-item" data-view="funnel">▽ Воронка</button>
+        <button class="nav-item" data-view="managers">▦ Менеджеры</button>
+        <button class="nav-item" data-view="stages">▤ Этапы CRM</button>
+        <button class="nav-item" data-view="registry">▣ Реестр</button>
       </nav>
     </aside>
 
     <main class="app">
       <header class="topbar">
         <div>
-          <h1>Дашборд эффективности (ROMI)</h1>
-          <p>Путь клиента от первого касания до мероприятия</p>
-        </div>
-        <div class="toolbar">
-          <select id="periodPreset" aria-label="Период">
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="month">Последний месяц</option>
-            <option value="quarter">Последние 3 месяца</option>
-            <option value="all">Все данные</option>
-          </select>
-          <input id="dateFrom" type="date" aria-label="Начало периода" />
-          <input id="dateTo" type="date" aria-label="Конец периода" />
-          <button id="resetData" class="ghost">Сбросить</button>
-          <button id="exportJson">Экспорт</button>
+          <h1>ArchiLoft · аналитика источников и CRM</h1>
+          <p id="sourceNote">Источник: первые 5 вкладок финальной таблицы</p>
         </div>
       </header>
 
@@ -51,36 +794,78 @@
       <section class="dashboard-grid">
         <article class="panel wide" data-panel="overview">
           <div class="panel-head">
-            <h2>ROMI по месяцам</h2>
-            <span id="romiHint"></span>
+            <h2>График эффективности каналов</h2>
+            <span>сделки, квалификация и бюджет</span>
           </div>
-          <div id="romiChart" class="line-chart"></div>
+          <div id="channelChart" class="bar-chart"></div>
         </article>
 
-        <article class="panel" data-panel="funnel">
+        <article class="panel" data-panel="overview">
           <div class="panel-head">
-            <h2>Воронка аренды площадки</h2>
+            <h2>Воронка CRM</h2>
+            <span>по финальной таблице</span>
           </div>
           <div id="funnelChart" class="funnel"></div>
         </article>
 
-        <article class="panel" data-panel="channels">
+        <article class="panel wide" data-panel="overview">
           <div class="panel-head">
-            <h2>ROMI по каналам CRM</h2>
+            <h2>Топ источников по бюджету CRM</h2>
+            <span>что дает деньги и сделки</span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Канал</th>
-                  <th>Категория</th>
-                  <th>Расход</th>
-                  <th>Сделки</th>
-                  <th>В работе</th>
-                  <th>Закрыто</th>
+                  <th>Источник</th>
+                  <th>Лиды CT</th>
+                  <th>Сделки CRM</th>
+                  <th>Квал.</th>
                   <th>КП</th>
+                  <th>Встречи</th>
+                  <th>Выручка CT</th>
                   <th>Бюджет CRM</th>
-                  <th>ROMI</th>
+                  <th>Расход</th>
+                  <th>Вывод</th>
+                </tr>
+              </thead>
+              <tbody id="topSourceRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel" data-panel="overview">
+          <div class="panel-head">
+            <h2>Короткий вывод</h2>
+            <span>из вкладки графика</span>
+          </div>
+          <div id="conclusions" class="decision-list"></div>
+        </article>
+
+        <article class="panel wide" data-panel="channels">
+          <div class="panel-head">
+            <h2>Каналы: лид → сделка → деньги</h2>
+            <span>платные, органика и прочие источники</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Группа</th>
+                  <th>Источник</th>
+                  <th>Точка контакта</th>
+                  <th>Расход</th>
+                  <th>Лиды CT</th>
+                  <th>Сделки</th>
+                  <th>Квал.</th>
+                  <th>Ирина</th>
+                  <th>Дарья</th>
+                  <th>КП</th>
+                  <th>Встречи</th>
+                  <th>Выручка CT</th>
+                  <th>Бюджет CRM</th>
+                  <th>CPL</th>
+                  <th>Решение</th>
                 </tr>
               </thead>
               <tbody id="channelRows"></tbody>
@@ -88,145 +873,61 @@
           </div>
         </article>
 
-        <article class="panel wide" data-panel="channels">
+        <article class="panel wide" data-panel="funnel">
           <div class="panel-head">
-            <h2>Данные: эффективность CRM</h2>
-            <span>тип мероприятия, статус, бюджет и затраты</span>
+            <h2>Этапы CRM крупно</h2>
+            <span>количество, доля и бюджет</span>
+          </div>
+          <div id="stageChart" class="bar-chart"></div>
+        </article>
+
+        <article class="panel wide" data-panel="funnel">
+          <div class="panel-head">
+            <h2>Детализация этапов</h2>
+            <span>исходные этапы CRM</span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Тип мероприятия</th>
-                  <th>Статус</th>
-                  <th>Сделки</th>
+                  <th>Этап</th>
+                  <th>Кол-во</th>
+                  <th>Доля</th>
                   <th>Бюджет CRM</th>
-                  <th>Затраты</th>
-                  <th>ROMI</th>
                 </tr>
               </thead>
-              <tbody id="crmEfficiencyRows"></tbody>
+              <tbody id="sourceStageRows"></tbody>
             </table>
           </div>
         </article>
 
-        <article class="panel" data-panel="events">
+        <article class="panel wide" data-panel="managers">
           <div class="panel-head">
-            <h2>Типы мероприятий</h2>
+            <h2>Эффективность менеджеров</h2>
+            <span>сделки, КП, встречи</span>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Тип</th>
-                  <th>События</th>
-                  <th>Выручка</th>
-                  <th>Прибыль</th>
-                </tr>
-              </thead>
-              <tbody id="eventRows"></tbody>
-            </table>
-          </div>
+          <div id="managerChart" class="bar-chart"></div>
         </article>
 
-        <article class="panel" data-panel="events">
+        <article class="panel wide" data-panel="managers">
           <div class="panel-head">
-            <h2>Календарь загрузки</h2>
-            <span id="occupancyLabel"></span>
-          </div>
-          <div id="calendarGrid" class="calendar"></div>
-        </article>
-
-        <article class="panel wide" data-panel="events">
-          <div class="panel-head">
-            <h2>Загрузка по месяцам и годам</h2>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Год</th>
-                  <th>Месяц</th>
-                  <th>Мероприятий</th>
-                  <th>Дней в месяце</th>
-                  <th>Загрузка</th>
-                </tr>
-              </thead>
-              <tbody id="occupancyRows"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article class="panel" data-panel="finance">
-          <div class="panel-head">
-            <h2>Стоимость привлечения</h2>
-          </div>
-          <div id="cacList" class="metric-list"></div>
-        </article>
-
-        <article class="panel wide" data-panel="advertising">
-          <div class="panel-head">
-            <h2>Реклама по месяцам</h2>
-            <span>12 месяцев и итог</span>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Год</th>
-                  <th>Статья</th>
-                  <th>Янв</th>
-                  <th>Фев</th>
-                  <th>Мар</th>
-                  <th>Апр</th>
-                  <th>Май</th>
-                  <th>Июн</th>
-                  <th>Июл</th>
-                  <th>Авг</th>
-                  <th>Сен</th>
-                  <th>Окт</th>
-                  <th>Ноя</th>
-                  <th>Дек</th>
-                  <th>Итого</th>
-                </tr>
-              </thead>
-              <tbody id="adYearRows"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article class="panel wide" data-panel="amortization">
-          <div class="panel-head">
-            <h2>Амортизация 2024-2026</h2>
-            <span>строка «Амортизация» из сводных</span>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Год</th>
-                  <th>Строк</th>
-                  <th>Сумма амортизации</th>
-                  <th>Накоплено</th>
-                </tr>
-              </thead>
-              <tbody id="amortizationRows"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article class="panel" data-panel="overview">
-          <div class="panel-head">
-            <h2>Работа менеджеров</h2>
+            <h2>Менеджеры в цифрах</h2>
+            <span>Ирина, Дарья и общий доступ</span>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Менеджер</th>
-                  <th>Лиды</th>
-                  <th>Брони</th>
-                  <th>ROMI</th>
+                  <th>Сделки CRM</th>
+                  <th>Доля</th>
+                  <th>Квал.</th>
+                  <th>КП</th>
+                  <th>Встречи</th>
+                  <th>В работе</th>
+                  <th>Бюджет CRM</th>
+                  <th>КП/CRM</th>
+                  <th>Встречи/CRM</th>
                 </tr>
               </thead>
               <tbody id="managerRows"></tbody>
@@ -234,1258 +935,1429 @@
           </div>
         </article>
 
-        <article class="panel" data-panel="finance">
+        <article class="panel wide" data-panel="stages">
           <div class="panel-head">
-            <h2>Финансы мероприятия</h2>
+            <h2>Этапы CRM по менеджерам</h2>
+            <span>вкладка Этапы_CRM</span>
           </div>
-          <div class="finance-box">
-            <div id="profitDonut" class="donut"></div>
-            <div id="financeRows" class="finance-rows"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Этап</th>
+                  <th>Всего</th>
+                  <th>Ирина</th>
+                  <th>Дарья</th>
+                  <th>Другие</th>
+                  <th>Доля</th>
+                  <th>Бюджет CRM</th>
+                  <th>Комментарий</th>
+                </tr>
+              </thead>
+              <tbody id="stageRows"></tbody>
+            </table>
           </div>
         </article>
 
-        <article class="panel" data-panel="overview">
+        <article class="panel wide" data-panel="registry">
           <div class="panel-head">
-            <h2>Повторные клиенты</h2>
+            <h2>Реестр: агрегировано по источникам</h2>
+            <span>без вывода базы клиентов</span>
           </div>
-          <div id="repeatBox" class="repeat"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Источник</th>
+                  <th>Сделки</th>
+                  <th>Квал.</th>
+                  <th>Бюджет CRM</th>
+                  <th>Оплачено</th>
+                  <th>Реализовано</th>
+                </tr>
+              </thead>
+              <tbody id="registrySourceRows"></tbody>
+            </table>
+          </div>
         </article>
 
-        <article class="panel" data-panel="overview">
+        <article class="panel" data-panel="registry">
           <div class="panel-head">
-            <h2>Прогноз загрузки</h2>
+            <h2>Реестр: итоги</h2>
+            <span>вкладка “Лиды Деньги”</span>
           </div>
-          <div id="forecastBox" class="forecast"></div>
+          <div id="registrySummary" class="summary-grid"></div>
         </article>
-      </section>
 
-      <section class="data-studio" data-panel="data">
-        <div class="studio-head">
-          <div>
-            <h2>Управление данными</h2>
-            <p>Финансовые строки из балансов: выручка, реклама, расходы и прибыль</p>
+        <article class="panel wide" data-panel="registry">
+          <div class="panel-head">
+            <h2>Точки контакта</h2>
+            <span>откуда пришло касание</span>
           </div>
-          <div class="studio-actions">
-            <label class="import-btn">
-              Импорт JSON
-              <input id="importJson" type="file" accept="application/json" />
-            </label>
-            <button id="addDeal">Добавить строку</button>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Точка контакта</th>
+                  <th>Сделки</th>
+                  <th>Квал.</th>
+                  <th>Бюджет CRM</th>
+                </tr>
+              </thead>
+              <tbody id="touchpointRows"></tbody>
+            </table>
           </div>
-        </div>
-        <div class="editable-wrap">
-          <table class="editable">
-            <thead>
-              <tr>
-                <th>Дата</th>
-                <th>Канал</th>
-                <th>Тип</th>
-                <th>Менеджер</th>
-                <th>Статус</th>
-                <th>Лиды</th>
-                <th>Расход</th>
-                <th>Выручка</th>
-                <th>Затраты</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="dealEditor"></tbody>
-          </table>
-        </div>
-        <div class="manual-grid">
-          <section>
-            <div class="studio-head compact">
-              <div>
-                <h2>Ручная правка рекламы</h2>
-                <p>Источник, расход, лиды и выручка для управленческих корректировок</p>
-              </div>
-              <button id="addManualAd">Добавить рекламу</button>
-            </div>
-            <div class="editable-wrap">
-              <table class="editable">
-                <thead>
-                  <tr>
-                    <th>Период</th>
-                    <th>Источник</th>
-                    <th>Расход</th>
-                    <th>Лиды</th>
-                    <th>Сделки</th>
-                    <th>Выручка</th>
-                    <th>Комментарий</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="manualAdRows"></tbody>
-              </table>
-            </div>
-          </section>
-          <section>
-            <div class="studio-head compact">
-              <div>
-                <h2>Ручная правка финансов</h2>
-                <p>Выручка, расходы, прибыль и амортизация для точных цифр</p>
-              </div>
-              <button id="addManualFinance">Добавить финансы</button>
-            </div>
-            <div class="editable-wrap">
-              <table class="editable">
-                <thead>
-                  <tr>
-                    <th>Период</th>
-                    <th>Выручка</th>
-                    <th>Расходы</th>
-                    <th>Прибыль</th>
-                    <th>Амортизация</th>
-                    <th>Комментарий</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="manualFinanceRows"></tbody>
-              </table>
-            </div>
-          </section>
-        </div>
+        </article>
       </section>
     </main>
 
-    <script src="dashboard-data.js"></script>
     <script>
-const STORAGE_KEY = "archiloft-romi-dashboard-v2";
-const MANAGER_OVERRIDES_KEY = "archiloft-manager-overrides-v1";
-const MANUAL_AD_KEY = "archiloft-manual-ad-v1";
-const MANUAL_FINANCE_KEY = "archiloft-manual-finance-v1";
-
-const financeData = window.ARCHILOFT_FINANCE_DATA || {
-  monthly: [],
-  yearly: [],
-  events: [],
-  event_types: [],
-  ad_lines: [],
-  ad_breakdown: [],
-  ad_by_year: [],
-  equipment_assets: [],
-  equipment_monthly: [],
-  equipment_summary: [],
-  equipment_transactions: [],
-  amortization_yearly: [],
-  amo_summary: [],
-  amo_note: ""
-};
-const crmData = {
-  "summary": {
-    "Потратили всего, ₽": 105292.87,
-    "Сделки CRM": 133.0,
-    "Квал. лиды CRM": 121.0,
-    "Звонки CRM (Манго)": 41.0,
-    "В работе": 38.0,
-    "Закрыто": 95.0,
-    "КП / предложение": 32.0,
-    "Встреча назначена": 1.0,
-    "Просмотр площадки / встреча проведена": 4.0,
-    "Договоры": 0.0,
-    "Предоплаты/оплаты": 0.0,
-    "Брони": 0.0,
-    "Реализованные мероприятия": 0.0,
-    "Бюджет сделок CRM, ₽": 26680240.0,
-    "Потенц. прибыль, ₽": 26574947.13
-  },
-  "channel_total": {
-    "channel": "ИТОГО",
-    "description": "",
-    "category": "",
-    "spend": 105292.87,
-    "crm_deals": 133,
-    "qualified_leads": 121,
-    "mango_calls": 41,
-    "in_work": 38,
-    "closed": 95,
-    "proposal": 32,
-    "meeting": 4,
-    "crm_budget": 26680240.0,
-    "cpl": 870.19,
-    "deal_cost": 791.68,
-    "profit": 26574947.13,
-    "fact": "CRM бюджет = потенциальная выручка, не факт оплаты",
-    "romi": 25239.07566580719
-  },
-  "channels": [
+const dashboardData = {
+  "source_file": "ФИНАЛ К СОВЕЩАНИЮ .xlsx",
+  "sheets_used": [
+    "Дашборд",
+    "Каналы",
+    "Этапы_CRM",
+    "Реестр Лиды Деньги Гениально",
+    "График эффективности"
+  ],
+  "key_figures": [
     {
-      "channel": "яндекс директ / cpc",
-      "description": "платная реклама / Промо групп",
-      "category": "платная реклама",
-      "spend": 105292.87,
-      "crm_deals": 14,
-      "qualified_leads": 14,
-      "mango_calls": 8,
-      "in_work": 3,
-      "closed": 11,
-      "proposal": 3,
-      "meeting": 0,
-      "crm_budget": 3110000.0,
-      "cpl": 7520.92,
-      "deal_cost": 7520.92,
-      "profit": 3004707.13,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": 2853.6662833865203
+      "label": "Потратили всего",
+      "value": 105292.87
     },
     {
-      "channel": "Ищу площадку (холодный поиск)",
-      "description": "мы сами нашли / холодный поиск",
-      "category": "холодный поиск",
-      "spend": 0.0,
-      "crm_deals": 5,
-      "qualified_leads": 5,
-      "mango_calls": 0,
-      "in_work": 5,
-      "closed": 0,
-      "proposal": 5,
-      "meeting": 0,
-      "crm_budget": 3000000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 3000000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Лиды Calltouch всего",
+      "value": 82
     },
     {
-      "channel": "organic",
-      "description": "бесплатный ресурс / органика",
-      "category": "органика",
-      "spend": 0.0,
-      "crm_deals": 16,
-      "qualified_leads": 16,
-      "mango_calls": 8,
-      "in_work": 4,
-      "closed": 12,
-      "proposal": 3,
-      "meeting": 1,
-      "crm_budget": 2970000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 2970000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Сделки CRM без дублей",
+      "value": 132
     },
     {
-      "channel": "Лид не найден",
-      "description": "занесли сами / источник не определен",
-      "category": "ручной ввод",
-      "spend": 0.0,
-      "crm_deals": 13,
-      "qualified_leads": 12,
-      "mango_calls": 0,
-      "in_work": 4,
-      "closed": 9,
-      "proposal": 3,
-      "meeting": 0,
-      "crm_budget": 2800240.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 2800240.0,
-      "fact": "нужно проставлять точный источник в CRM/UTM",
-      "romi": null
+      "label": "Квалифицированные лиды",
+      "value": 120
     },
     {
-      "channel": "social",
-      "description": "Telegram / VK / соцсети / мессенджеры",
-      "category": "соцсети",
-      "spend": 0.0,
-      "crm_deals": 16,
-      "qualified_leads": 16,
-      "mango_calls": 1,
-      "in_work": 3,
-      "closed": 13,
-      "proposal": 2,
-      "meeting": 1,
-      "crm_budget": 2670000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 2670000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Звонки / касания",
+      "value": 40
     },
     {
-      "channel": "Манго / звонки",
-      "description": "звонки Манго без точного UTM-источника",
-      "category": "звонки",
-      "spend": 0.0,
-      "crm_deals": 12,
-      "qualified_leads": 12,
-      "mango_calls": 12,
-      "in_work": 4,
-      "closed": 8,
-      "proposal": 4,
-      "meeting": 0,
-      "crm_budget": 2340000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 2340000.0,
-      "fact": "нужно проставлять точный источник в CRM/UTM",
-      "romi": null
+      "label": "Сделки в работе",
+      "value": 38
     },
     {
-      "channel": "уже обращались",
-      "description": "клиенты/лиды, которые уже знали площадку",
-      "category": "повторные",
-      "spend": 0.0,
-      "crm_deals": 9,
-      "qualified_leads": 9,
-      "mango_calls": 0,
-      "in_work": 2,
-      "closed": 7,
-      "proposal": 2,
-      "meeting": 0,
-      "crm_budget": 2100000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 2100000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Закрыто",
+      "value": 94
     },
     {
-      "channel": "(none)",
-      "description": "Яндекс/прямой брендовый заход: ввели «Архилофт»",
-      "category": "брендовый поиск",
-      "spend": 0.0,
-      "crm_deals": 10,
-      "qualified_leads": 10,
-      "mango_calls": 6,
-      "in_work": 3,
-      "closed": 7,
-      "proposal": 2,
-      "meeting": 0,
-      "crm_budget": 1720000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 1720000.0,
-      "fact": "нужно проставлять точный источник в CRM/UTM",
-      "romi": null
+      "label": "КП / предложения",
+      "value": 32
     },
     {
-      "channel": "Почта",
-      "description": "входящие заявки на почту",
-      "category": "почта",
-      "spend": 0.0,
-      "crm_deals": 6,
-      "qualified_leads": 6,
-      "mango_calls": 0,
-      "in_work": 2,
-      "closed": 4,
-      "proposal": 2,
-      "meeting": 0,
-      "crm_budget": 1030000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 1030000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Встреча проведена / просмотры",
+      "value": 4
     },
     {
-      "channel": "cpc",
-      "description": "платная реклама, прочие UTM cpc",
-      "category": "платная реклама",
-      "spend": 0.0,
-      "crm_deals": 3,
-      "qualified_leads": 3,
-      "mango_calls": 2,
-      "in_work": 2,
-      "closed": 1,
-      "proposal": 2,
-      "meeting": 0,
-      "crm_budget": 680000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 680000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Брони",
+      "value": 0
     },
     {
-      "channel": "referral",
-      "description": "другие источники / рефералы",
-      "category": "реферал",
-      "spend": 0.0,
-      "crm_deals": 3,
-      "qualified_leads": 3,
-      "mango_calls": 2,
-      "in_work": 2,
-      "closed": 1,
-      "proposal": 2,
-      "meeting": 0,
-      "crm_budget": 640000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 640000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Договоры",
+      "value": 0
     },
     {
-      "channel": "Спам",
-      "description": "нецелевые/спам-заявки",
-      "category": "нецелевые",
-      "spend": 0.0,
-      "crm_deals": 11,
-      "qualified_leads": 0,
-      "mango_calls": 1,
-      "in_work": 0,
-      "closed": 11,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 600000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 600000.0,
-      "fact": "не учитывать в эффективности каналов",
-      "romi": null
+      "label": "Предоплаты / оплаты",
+      "value": 0
     },
     {
-      "channel": "Тильда / сайт",
-      "description": "заявки с сайта/формы без точного UTM",
-      "category": "сайт",
-      "spend": 0.0,
-      "crm_deals": 2,
-      "qualified_leads": 2,
-      "mango_calls": 0,
-      "in_work": 1,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 1,
-      "crm_budget": 440000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 440000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
+      "label": "Реализованные мероприятия",
+      "value": 0
     },
     {
-      "channel": "рекомендации",
-      "description": "сотрудничество / рекомендации",
-      "category": "партнерский",
-      "spend": 0.0,
-      "crm_deals": 2,
-      "qualified_leads": 2,
-      "mango_calls": 0,
-      "in_work": 1,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 1,
-      "crm_budget": 440000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 440000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "Инстаграм",
-      "description": "Instagram / ig",
-      "category": "соцсети",
-      "spend": 0.0,
-      "crm_deals": 2,
-      "qualified_leads": 2,
-      "mango_calls": 0,
-      "in_work": 1,
-      "closed": 1,
-      "proposal": 1,
-      "meeting": 0,
-      "crm_budget": 400000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 400000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "<не указано>",
-      "description": "источник не указан",
-      "category": "неразмечено",
-      "spend": 0.0,
-      "crm_deals": 2,
-      "qualified_leads": 2,
-      "mango_calls": 1,
-      "in_work": 0,
-      "closed": 2,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 400000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 400000.0,
-      "fact": "нужно проставлять точный источник в CRM/UTM",
-      "romi": null
-    },
-    {
-      "channel": "вед вед",
-      "description": "Wed Wed / Вед Вед",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 2,
-      "qualified_leads": 2,
-      "mango_calls": 0,
-      "in_work": 1,
-      "closed": 1,
-      "proposal": 1,
-      "meeting": 0,
-      "crm_budget": 400000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 400000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "Рассылка",
-      "description": "рассылка",
-      "category": "рассылка",
-      "spend": 0.0,
-      "crm_deals": 1,
-      "qualified_leads": 1,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 200000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 200000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "баш тудей",
-      "description": "Bash Today",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 1,
-      "qualified_leads": 1,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 200000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 200000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "ревел тайм",
-      "description": "Revel Time",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 1,
-      "qualified_leads": 1,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 200000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 200000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "яндекс карты",
-      "description": "Яндекс Карты",
-      "category": "карты",
-      "spend": 0.0,
-      "crm_deals": 1,
-      "qualified_leads": 1,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 190000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 190000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "Агрегатор",
-      "description": "агрегатор без уточнения площадки",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 1,
-      "qualified_leads": 1,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 1,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 150000.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 150000.0,
-      "fact": "договоров/предоплат в выгрузке нет",
-      "romi": null
-    },
-    {
-      "channel": "горько",
-      "description": "Горько",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "портал номер1",
-      "description": "Портал №1",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "Speed rent",
-      "description": "Speed rent",
-      "category": "агрегатор",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "BigFinger",
-      "description": "BigFinger",
-      "category": "партнерский/ивент",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "mainpage",
-      "description": "сайт / главная",
-      "category": "сайт",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "sign",
-      "description": "форма / sign",
-      "category": "форма",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "cpc (yclid)",
-      "description": "платная реклама: yclid",
-      "category": "платная реклама",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "<не заполнено>",
-      "description": "UTM/источник не заполнен",
-      "category": "неразмечено",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
-    },
-    {
-      "channel": "яндекс директ",
-      "description": "дополнительная детализация рекламы",
-      "category": "платная реклама",
-      "spend": 0.0,
-      "crm_deals": 0,
-      "qualified_leads": 0,
-      "mango_calls": 0,
-      "in_work": 0,
-      "closed": 0,
-      "proposal": 0,
-      "meeting": 0,
-      "crm_budget": 0.0,
-      "cpl": 0.0,
-      "deal_cost": 0.0,
-      "profit": 0.0,
-      "fact": "заявок пока нет",
-      "romi": null
+      "label": "Потенциальный бюджет CRM",
+      "value": 26680240
     }
   ],
-  "efficiency": [
+  "manager_summary": [
     {
-      "event_type": "Другое",
-      "status": "Закрыто",
-      "deals": 67,
-      "revenue": 9100000.0,
-      "costs": 48752.9687459807,
-      "romi": 18565.529985289817
+      "manager": "Ирина",
+      "deals": 46,
+      "share": 0.3484848484848485,
+      "qualified": 42,
+      "proposal": 12,
+      "meetings": 3,
+      "budget": 9900240
     },
     {
-      "event_type": "Другое",
-      "status": "КП / предложение",
-      "deals": 18,
-      "revenue": 7230240.0,
-      "costs": 13203.929035369776,
-      "romi": 54658.24643280141
+      "manager": "Дарья",
+      "deals": 80,
+      "share": 0.6060606060606061,
+      "qualified": 73,
+      "proposal": 20,
+      "meetings": 3,
+      "budget": 16280000
     },
     {
-      "event_type": "Свадьбы",
-      "status": "Закрыто",
-      "deals": 9,
-      "revenue": 2050000.0,
-      "costs": 16928.114147909968,
-      "romi": 12010.031761884731
-    },
-    {
-      "event_type": "Съемки",
-      "status": "Закрыто",
+      "manager": "Другие/общий доступ",
       "deals": 6,
-      "revenue": 1380000.0,
-      "costs": 5078.43424437299,
-      "romi": 27073.729807155985
-    },
-    {
-      "event_type": "Конференции / деловые",
-      "status": "КП / предложение",
-      "deals": 4,
-      "revenue": 1020000.0,
-      "costs": 14558.178167202572,
-      "romi": 6906.371183847094
-    },
-    {
-      "event_type": "Детские / выпускные",
-      "status": "Закрыто",
-      "deals": 3,
-      "revenue": 940000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Конференции / деловые",
-      "status": "Закрыто",
-      "deals": 4,
-      "revenue": 770000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Вечеринки / дни рождения",
-      "status": "Закрыто",
-      "deals": 3,
-      "revenue": 680000.0,
-      "costs": 6771.2456591639875,
-      "romi": 9942.465363514166
-    },
-    {
-      "event_type": "Корпоративы",
-      "status": "КП / предложение",
-      "deals": 4,
-      "revenue": 640000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Корпоративы",
-      "status": "Закрыто",
-      "deals": 3,
-      "revenue": 630000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Свадьбы",
-      "status": "Встреча проведена",
-      "deals": 2,
-      "revenue": 480000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Мастер-классы",
-      "status": "КП / предложение",
-      "deals": 1,
-      "revenue": 480000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Конференции / деловые",
-      "status": "Встреча назначена",
-      "deals": 1,
-      "revenue": 240000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Корпоративы",
-      "status": "Встреча проведена",
-      "deals": 1,
-      "revenue": 240000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Свадьбы",
-      "status": "КП / предложение",
-      "deals": 3,
-      "revenue": 200000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Съемки",
-      "status": "КП / предложение",
-      "deals": 1,
-      "revenue": 200000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Детские / выпускные",
-      "status": "Встреча проведена",
-      "deals": 1,
-      "revenue": 200000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Детские / выпускные",
-      "status": "КП / предложение",
-      "deals": 1,
-      "revenue": 200000.0,
-      "costs": 0.0,
-      "romi": null
-    },
-    {
-      "event_type": "Другое",
-      "status": "В работе / неразобранное",
-      "deals": 1,
-      "revenue": 0.0,
-      "costs": 0.0,
-      "romi": null
+      "share": 0.04545454545454546,
+      "qualified": 5,
+      "proposal": 0,
+      "meetings": 0,
+      "budget": 500000
     }
   ],
-  "stages": [
+  "funnel": [
     {
-      "stage": "Озвучено предложение",
-      "group": "КП / предложение",
-      "deals": 32,
-      "share": 0.24060150375939848,
-      "budget": 9970240.0
+      "stage": "В работе",
+      "count": 38,
+      "share": 0.2878787878787879,
+      "comment": "Активный этап"
     },
     {
-      "stage": "Закрыто и не реализовано",
-      "group": "Закрыто",
-      "deals": 28,
-      "share": 0.21052631578947367,
-      "budget": 2230000.0
+      "stage": "Закрыто",
+      "count": 94,
+      "share": 0.7121212121212122,
+      "comment": "Закрытые сделки"
     },
     {
-      "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
-      "group": "Закрыто",
-      "deals": 21,
-      "share": 0.15789473684210525,
-      "budget": 3910000.0
+      "stage": "КП / предложение",
+      "count": 32,
+      "share": 0.2424242424242424,
+      "comment": "Активный этап"
     },
     {
-      "stage": "Закрыто и не реализовано (Не вышли на связь)",
-      "group": "Закрыто",
-      "deals": 14,
-      "share": 0.10526315789473684,
-      "budget": 2760000.0
-    },
-    {
-      "stage": "Закрыто и не реализовано (Не подходит по расположению)",
-      "group": "Закрыто",
-      "deals": 8,
-      "share": 0.06015037593984962,
-      "budget": 1520000.0
-    },
-    {
-      "stage": "Закрыто и не реализовано (Отмена события)",
-      "group": "Закрыто",
-      "deals": 8,
-      "share": 0.06015037593984962,
-      "budget": 1700000.0
-    },
-    {
-      "stage": "Закрыто и не реализовано (Дата занята)",
-      "group": "Закрыто",
-      "deals": 7,
-      "share": 0.05263157894736842,
-      "budget": 1640000.0
-    },
-    {
-      "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
-      "group": "Закрыто",
-      "deals": 5,
-      "share": 0.03759398496240601,
-      "budget": 1110000.0
+      "stage": "Встреча назначена",
+      "count": 1,
+      "share": 0.007575757575757576,
+      "comment": "Активный этап"
     },
     {
       "stage": "Встреча проведена",
-      "group": "Встреча проведена",
-      "deals": 4,
-      "share": 0.03007518796992481,
-      "budget": 920000.0
+      "count": 4,
+      "share": 0.0303030303030303,
+      "comment": "Активный этап"
+    },
+    {
+      "stage": "Брони",
+      "count": 0,
+      "share": 0,
+      "comment": "Нет отдельного поля в CRM"
+    },
+    {
+      "stage": "Договоры / предоплаты",
+      "count": 0,
+      "share": 0,
+      "comment": "Нет данных оплат в CRM"
+    },
+    {
+      "stage": "Реализовано",
+      "count": 0,
+      "share": 0,
+      "comment": "Нет данных реализации"
+    }
+  ],
+  "top_sources": [
+    {
+      "source": "Лид не найден / не указан",
+      "ct_leads": 0,
+      "crm_deals": 28,
+      "qualified": 26,
+      "proposal": 7,
+      "meetings": 1,
+      "ct_revenue": 12770240,
+      "crm_budget": 5780240,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Изменить учет источника"
+    },
+    {
+      "source": "Органика",
+      "ct_leads": 29,
+      "crm_deals": 18,
+      "qualified": 18,
+      "proposal": 4,
+      "meetings": 1,
+      "ct_revenue": 5570000,
+      "crm_budget": 5570000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "source": "Яндекс Директ / CPC",
+      "ct_leads": 24,
+      "crm_deals": 19,
+      "qualified": 19,
+      "proposal": 5,
+      "meetings": 0,
+      "ct_revenue": 4190000,
+      "crm_budget": 4190000,
+      "spend": 105292.87,
+      "cpl": 4387.202916666666,
+      "decision": "Оставить, оптимизировать CPL"
+    },
+    {
+      "source": "Соцсети / Telegram",
+      "ct_leads": 1,
+      "crm_deals": 15,
+      "qualified": 15,
+      "proposal": 3,
+      "meetings": 1,
+      "ct_revenue": 200000,
+      "crm_budget": 2470000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "source": "Уже обращались",
+      "ct_leads": 0,
+      "crm_deals": 9,
+      "qualified": 9,
+      "proposal": 2,
+      "meetings": 0,
+      "ct_revenue": 0,
+      "crm_budget": 2100000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "source": "Прямой брендовый заход",
+      "ct_leads": 18,
+      "crm_deals": 11,
+      "qualified": 11,
+      "proposal": 2,
+      "meetings": 0,
+      "ct_revenue": 1880000,
+      "crm_budget": 1920000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "source": "Рекомендации / рефералы",
+      "ct_leads": 6,
+      "crm_deals": 6,
+      "qualified": 6,
+      "proposal": 2,
+      "meetings": 1,
+      "ct_revenue": 1230000,
+      "crm_budget": 1270000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "source": "Почта",
+      "ct_leads": 0,
+      "crm_deals": 6,
+      "qualified": 6,
+      "proposal": 2,
+      "meetings": 0,
+      "ct_revenue": 0,
+      "crm_budget": 1030000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "source": "Спам / нецелевые",
+      "ct_leads": 0,
+      "crm_deals": 10,
+      "qualified": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "ct_revenue": 0,
+      "crm_budget": 600000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Отключить / исключить из анализа"
+    },
+    {
+      "source": "Ищу площадку / холодный поиск",
+      "ct_leads": 0,
+      "crm_deals": 4,
+      "qualified": 4,
+      "proposal": 4,
+      "meetings": 0,
+      "ct_revenue": 0,
+      "crm_budget": 600000,
+      "spend": 0,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    }
+  ],
+  "channels": [
+    {
+      "group": "Платные",
+      "source": "Яндекс Директ / CPC",
+      "supplier": "Promo Group",
+      "touchpoint": "Сайт / Tilda / Mango",
+      "spend": 105292.87,
+      "ct_leads": 24,
+      "crm_deals": 24,
+      "qualified": 19,
+      "irina": 7,
+      "daria": 12,
+      "other": 0,
+      "calls": 10,
+      "proposal": 5,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 4190000,
+      "crm_budget": 4190000,
+      "cpl": 4387,
+      "decision": "Оставить, оптимизировать CPL"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Лид не найден / не указан",
+      "supplier": "",
+      "touchpoint": "Не указано 14, Mango / звонок 12",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 28,
+      "qualified": 26,
+      "irina": 10,
+      "daria": 13,
+      "other": 5,
+      "calls": 12,
+      "proposal": 7,
+      "meetings": 1,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 12770240,
+      "crm_budget": 5780240,
+      "cpl": 0,
+      "decision": "Изменить учет источника"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Органика",
+      "supplier": "",
+      "touchpoint": "Mango / звонок 8, Tilda / форма сайта 6",
+      "spend": 0,
+      "ct_leads": 29,
+      "crm_deals": 18,
+      "qualified": 18,
+      "irina": 10,
+      "daria": 8,
+      "other": 0,
+      "calls": 8,
+      "proposal": 4,
+      "meetings": 1,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 5570000,
+      "crm_budget": 5570000,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Соцсети / Telegram",
+      "supplier": "",
+      "touchpoint": "Мессенджер 11, VK / соцсети 2",
+      "spend": 0,
+      "ct_leads": 1,
+      "crm_deals": 15,
+      "qualified": 15,
+      "irina": 5,
+      "daria": 10,
+      "other": 0,
+      "calls": 1,
+      "proposal": 3,
+      "meetings": 1,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 200000,
+      "crm_budget": 2470000,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Уже обращались",
+      "supplier": "",
+      "touchpoint": "Ручной ввод CRM 9",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 9,
+      "qualified": 9,
+      "irina": 0,
+      "daria": 8,
+      "other": 1,
+      "calls": 0,
+      "proposal": 2,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 2100000,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Прямой брендовый заход",
+      "supplier": "",
+      "touchpoint": "сайт архилофт ",
+      "spend": 0,
+      "ct_leads": 18,
+      "crm_deals": 11,
+      "qualified": 11,
+      "irina": 5,
+      "daria": 6,
+      "other": 0,
+      "calls": 7,
+      "proposal": 2,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 1880000,
+      "crm_budget": 1920000,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Рекомендации / рефералы",
+      "supplier": "",
+      "touchpoint": "Tilda / форма сайта 3, Mango / звонок 2",
+      "spend": 0,
+      "ct_leads": 6,
+      "crm_deals": 6,
+      "qualified": 6,
+      "irina": 2,
+      "daria": 4,
+      "other": 0,
+      "calls": 2,
+      "proposal": 2,
+      "meetings": 1,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 1230000,
+      "crm_budget": 1270000,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Почта",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 6,
+      "qualified": 6,
+      "irina": 2,
+      "daria": 4,
+      "other": 0,
+      "calls": 0,
+      "proposal": 2,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 1030000,
+      "cpl": 0,
+      "decision": "Усилить"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Ищу площадку / холодный поиск",
+      "supplier": "",
+      "touchpoint": "Ручной ввод CRM 4",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 4,
+      "qualified": 4,
+      "irina": 1,
+      "daria": 3,
+      "other": 0,
+      "calls": 0,
+      "proposal": 4,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 600000,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Спам / нецелевые",
+      "supplier": "",
+      "touchpoint": "Спам 8, Не указано 2",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 10,
+      "qualified": 0,
+      "irina": 3,
+      "daria": 7,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 600000,
+      "cpl": 0,
+      "decision": "Отключить / исключить из анализа"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Вед Вед",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 2,
+      "qualified": 2,
+      "irina": 0,
+      "daria": 2,
+      "other": 0,
+      "calls": 0,
+      "proposal": 1,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 400000,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Bash Today",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 1,
+      "qualified": 1,
+      "irina": 0,
+      "daria": 1,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 200000,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Revel Time / SpeedRent",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 1,
+      "qualified": 1,
+      "irina": 0,
+      "daria": 1,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 200000,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Рассылка",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 1,
+      "qualified": 1,
+      "irina": 0,
+      "daria": 1,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 200000,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Агрегатор без уточнения",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 4,
+      "crm_deals": 1,
+      "qualified": 1,
+      "irina": 1,
+      "daria": 0,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 400000,
+      "crm_budget": 150000,
+      "cpl": 0,
+      "decision": "Оставить в наблюдении"
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Горько",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 0,
+      "qualified": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 0,
+      "cpl": 0,
+      "decision": ""
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Портал №1",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 0,
+      "qualified": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 0,
+      "cpl": 0,
+      "decision": ""
+    },
+    {
+      "group": "Бесплатные / органика / прочие",
+      "source": "Яндекс Карты",
+      "supplier": "",
+      "touchpoint": "",
+      "spend": 0,
+      "ct_leads": 0,
+      "crm_deals": 0,
+      "qualified": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "calls": 0,
+      "proposal": 0,
+      "meetings": 0,
+      "bookings": 0,
+      "paid": 0,
+      "realized": 0,
+      "ct_revenue": 0,
+      "crm_budget": 0,
+      "cpl": 0,
+      "decision": ""
+    }
+  ],
+  "channel_totals": {
+    "ct_leads": 82,
+    "crm_deals": 137,
+    "qualified": 120,
+    "spend": 105292.87,
+    "crm_budget": 26680240,
+    "ct_revenue": 26240240
+  },
+  "stages": [
+    {
+      "stage": "В работе",
+      "total": 38,
+      "irina": 16,
+      "daria": 21,
+      "other": 1,
+      "share": 0.2878787878787879,
+      "budget": 11130240,
+      "comment": "Активные этапы"
+    },
+    {
+      "stage": "Закрыто",
+      "total": 94,
+      "irina": 30,
+      "daria": 59,
+      "other": 5,
+      "share": 0.7121212121212122,
+      "budget": 15550000,
+      "comment": "Закрытые сделки"
+    },
+    {
+      "stage": "КП / предложение",
+      "total": 32,
+      "irina": 12,
+      "daria": 20,
+      "other": 0,
+      "share": 0.2424242424242424,
+      "budget": 9970240,
+      "comment": "Активный этап"
+    },
+    {
+      "stage": "Встреча назначена",
+      "total": 1,
+      "irina": 1,
+      "daria": 0,
+      "other": 0,
+      "share": 0.007575757575757576,
+      "budget": 240000,
+      "comment": "Активный этап"
+    },
+    {
+      "stage": "Встреча проведена / просмотр",
+      "total": 4,
+      "irina": 3,
+      "daria": 1,
+      "other": 0,
+      "share": 0.0303030303030303,
+      "budget": 920000,
+      "comment": "Активный этап"
+    },
+    {
+      "stage": "Брони",
+      "total": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "share": 0,
+      "budget": 0,
+      "comment": "В CRM нет отдельного этапа"
+    },
+    {
+      "stage": "Договоры",
+      "total": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "share": 0,
+      "budget": 0,
+      "comment": "Нет данных"
+    },
+    {
+      "stage": "Предоплаты / оплаты",
+      "total": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "share": 0,
+      "budget": 0,
+      "comment": "Нет данных"
+    },
+    {
+      "stage": "Реализованные мероприятия",
+      "total": 0,
+      "irina": 0,
+      "daria": 0,
+      "other": 0,
+      "share": 0,
+      "budget": 0,
+      "comment": "Нет данных"
+    }
+  ],
+  "source_stages": [
+    {
+      "stage": "Озвучено предложение",
+      "count": 32,
+      "share": 0.2424242424242424,
+      "budget": 9970240
+    },
+    {
+      "stage": "Закрыто и не реализовано(очистка базы)",
+      "count": 27,
+      "share": 0.2045454545454546,
+      "budget": 2230000
+    },
+    {
+      "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
+      "count": 21,
+      "share": 0.1590909090909091,
+      "budget": 3910000
+    },
+    {
+      "stage": "Закрыто и не реализовано (Не вышли на связь)",
+      "count": 14,
+      "share": 0.1060606060606061,
+      "budget": 2760000
+    },
+    {
+      "stage": "Закрыто и не реализовано (Не подходит по расположению)",
+      "count": 8,
+      "share": 0.06060606060606061,
+      "budget": 1520000
+    },
+    {
+      "stage": "Закрыто и не реализовано (Отмена события)",
+      "count": 8,
+      "share": 0.06060606060606061,
+      "budget": 1700000
+    },
+    {
+      "stage": "Закрыто и не реализовано (Дата занята)",
+      "count": 7,
+      "share": 0.05303030303030303,
+      "budget": 1640000
+    },
+    {
+      "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
+      "count": 5,
+      "share": 0.03787878787878788,
+      "budget": 1110000
+    },
+    {
+      "stage": "Встреча проведена",
+      "count": 4,
+      "share": 0.0303030303030303,
+      "budget": 920000
     },
     {
       "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
-      "group": "Закрыто",
-      "deals": 4,
-      "share": 0.03007518796992481,
-      "budget": 680000.0
+      "count": 4,
+      "share": 0.0303030303030303,
+      "budget": 680000
     },
     {
       "stage": "Назначена встреча",
-      "group": "Встреча назначена",
-      "deals": 1,
-      "share": 0.007518796992481203,
-      "budget": 240000.0
-    },
-    {
-      "stage": "Неразобранное",
-      "group": "В работе / неразобранное",
-      "deals": 1,
-      "share": 0.007518796992481203,
-      "budget": 0.0
+      "count": 1,
+      "share": 0.007575757575757576,
+      "budget": 240000
     }
   ],
-  "amortization_yearly": [
+  "registry_summary": {
+    "rows": 132,
+    "qualified": 120,
+    "budget": 26680240,
+    "paid": 0,
+    "realized": 0,
+    "by_source": [
+      {
+        "source": "Лид не найден / не указан",
+        "deals": 28,
+        "qualified": 26,
+        "budget": 5780240,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Органика",
+        "deals": 18,
+        "qualified": 18,
+        "budget": 5570000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Яндекс Директ / CPC",
+        "deals": 19,
+        "qualified": 19,
+        "budget": 4190000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Соцсети / Telegram",
+        "deals": 15,
+        "qualified": 15,
+        "budget": 2470000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Уже обращались",
+        "deals": 9,
+        "qualified": 9,
+        "budget": 2100000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Прямой брендовый заход",
+        "deals": 11,
+        "qualified": 11,
+        "budget": 1920000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Рекомендации / рефералы",
+        "deals": 6,
+        "qualified": 6,
+        "budget": 1270000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Почта",
+        "deals": 6,
+        "qualified": 6,
+        "budget": 1030000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Спам / нецелевые",
+        "deals": 10,
+        "qualified": 0,
+        "budget": 600000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Ищу площадку / холодный поиск",
+        "deals": 4,
+        "qualified": 4,
+        "budget": 600000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Вед Вед",
+        "deals": 2,
+        "qualified": 2,
+        "budget": 400000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Bash Today",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 200000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Revel Time / SpeedRent",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 200000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Рассылка",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 200000,
+        "paid": 0,
+        "realized": 0
+      },
+      {
+        "source": "Агрегатор без уточнения",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 150000,
+        "paid": 0,
+        "realized": 0
+      }
+    ],
+    "by_stage": [
+      {
+        "stage": "Озвучено предложение",
+        "deals": 32,
+        "qualified": 32,
+        "budget": 9970240
+      },
+      {
+        "stage": "Закрыто и не реализовано",
+        "deals": 27,
+        "qualified": 19,
+        "budget": 2230000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Выбрали другую площадку)",
+        "deals": 21,
+        "qualified": 21,
+        "budget": 3910000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не вышли на связь)",
+        "deals": 14,
+        "qualified": 11,
+        "budget": 2760000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Отмена события)",
+        "deals": 8,
+        "qualified": 8,
+        "budget": 1700000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не подходит по расположению)",
+        "deals": 8,
+        "qualified": 8,
+        "budget": 1520000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Дата занята)",
+        "deals": 7,
+        "qualified": 7,
+        "budget": 1640000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не прошли по бюджету)",
+        "deals": 5,
+        "qualified": 5,
+        "budget": 1110000
+      },
+      {
+        "stage": "Встреча проведена",
+        "deals": 4,
+        "qualified": 4,
+        "budget": 920000
+      },
+      {
+        "stage": "Закрыто и не реализовано (Не прошли по вместимости)",
+        "deals": 4,
+        "qualified": 4,
+        "budget": 680000
+      },
+      {
+        "stage": "Назначена встреча",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 240000
+      },
+      {
+        "stage": "Неразобранное",
+        "deals": 1,
+        "qualified": 0,
+        "budget": 0
+      }
+    ],
+    "by_touchpoint": [
+      {
+        "touchpoint": "Mango / звонок",
+        "deals": 40,
+        "qualified": 40,
+        "budget": 7180000
+      },
+      {
+        "touchpoint": "Tilda / форма сайта",
+        "deals": 21,
+        "qualified": 21,
+        "budget": 4580000
+      },
+      {
+        "touchpoint": "Не указано",
+        "deals": 18,
+        "qualified": 14,
+        "budget": 3700240
+      },
+      {
+        "touchpoint": "Ручной ввод CRM",
+        "deals": 16,
+        "qualified": 16,
+        "budget": 5540000
+      },
+      {
+        "touchpoint": "Мессенджер",
+        "deals": 13,
+        "qualified": 13,
+        "budget": 2470000
+      },
+      {
+        "touchpoint": "Почта",
+        "deals": 8,
+        "qualified": 8,
+        "budget": 1460000
+      },
+      {
+        "touchpoint": "Спам",
+        "deals": 8,
+        "qualified": 0,
+        "budget": 600000
+      },
+      {
+        "touchpoint": "Агрегатор",
+        "deals": 3,
+        "qualified": 3,
+        "budget": 550000
+      },
+      {
+        "touchpoint": "VK / соцсети",
+        "deals": 2,
+        "qualified": 2,
+        "budget": 0
+      },
+      {
+        "touchpoint": "Bash Today",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 200000
+      },
+      {
+        "touchpoint": "SpeedRent",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 200000
+      },
+      {
+        "touchpoint": "Рассылка",
+        "deals": 1,
+        "qualified": 1,
+        "budget": 200000
+      }
+    ]
+  },
+  "eff_channels": [
     {
-      "year": 2024,
-      "rows_count": 112,
-      "amortization_amount": 371902.0,
-      "cumulative_amount": 371902.0
+      "source": "Лид не найден / не указан",
+      "ct_leads": 0,
+      "crm_deals": 28,
+      "qualified": 26,
+      "proposal": 7,
+      "meetings": 1,
+      "potential_profit": 12770240,
+      "quality_rate": 0.929
     },
     {
-      "year": 2025,
-      "rows_count": 83,
-      "amortization_amount": 390876.51,
-      "cumulative_amount": 762778.51
+      "source": "Яндекс Директ / CPC",
+      "ct_leads": 24,
+      "crm_deals": 19,
+      "qualified": 19,
+      "proposal": 5,
+      "meetings": 0,
+      "potential_profit": 4084707,
+      "quality_rate": 1.0
     },
     {
-      "year": 2026,
-      "rows_count": 10,
-      "amortization_amount": 124914.42,
-      "cumulative_amount": 887692.93
+      "source": "Органика",
+      "ct_leads": 29,
+      "crm_deals": 18,
+      "qualified": 18,
+      "proposal": 4,
+      "meetings": 1,
+      "potential_profit": 5570000,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Соцсети / Telegram",
+      "ct_leads": 1,
+      "crm_deals": 15,
+      "qualified": 15,
+      "proposal": 3,
+      "meetings": 1,
+      "potential_profit": 200000,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Прямой брендовый заход",
+      "ct_leads": 18,
+      "crm_deals": 11,
+      "qualified": 11,
+      "proposal": 2,
+      "meetings": 0,
+      "potential_profit": 1880000,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Уже обращались",
+      "ct_leads": 0,
+      "crm_deals": 9,
+      "qualified": 9,
+      "proposal": 2,
+      "meetings": 0,
+      "potential_profit": 0,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Рекомендации / рефералы",
+      "ct_leads": 6,
+      "crm_deals": 6,
+      "qualified": 6,
+      "proposal": 2,
+      "meetings": 1,
+      "potential_profit": 1230000,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Почта",
+      "ct_leads": 0,
+      "crm_deals": 6,
+      "qualified": 6,
+      "proposal": 2,
+      "meetings": 0,
+      "potential_profit": 0,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Ищу площадку / холодный поиск",
+      "ct_leads": 0,
+      "crm_deals": 4,
+      "qualified": 4,
+      "proposal": 4,
+      "meetings": 0,
+      "potential_profit": 0,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Вед Вед",
+      "ct_leads": 0,
+      "crm_deals": 2,
+      "qualified": 2,
+      "proposal": 1,
+      "meetings": 0,
+      "potential_profit": 0,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Агрегатор без уточнения",
+      "ct_leads": 4,
+      "crm_deals": 1,
+      "qualified": 1,
+      "proposal": 0,
+      "meetings": 0,
+      "potential_profit": 400000,
+      "quality_rate": 1.0
+    },
+    {
+      "source": "Bash Today",
+      "ct_leads": 0,
+      "crm_deals": 1,
+      "qualified": 1,
+      "proposal": 0,
+      "meetings": 0,
+      "potential_profit": 0,
+      "quality_rate": 1.0
+    }
+  ],
+  "eff_managers": [
+    {
+      "manager": "Ирина",
+      "crm_deals": 46,
+      "qualified": 42,
+      "proposal": 12,
+      "meetings": 3,
+      "in_work": 16,
+      "budget": 9900240,
+      "proposal_rate": 0.261,
+      "meeting_rate": 0.065
+    },
+    {
+      "manager": "Дарья",
+      "crm_deals": 80,
+      "qualified": 73,
+      "proposal": 20,
+      "meetings": 1,
+      "in_work": 21,
+      "budget": 16280000,
+      "proposal_rate": 0.25,
+      "meeting_rate": 0.012
+    },
+    {
+      "manager": "Другие/общий доступ",
+      "crm_deals": 6,
+      "qualified": 5,
+      "proposal": 0,
+      "meetings": 0,
+      "in_work": 1,
+      "budget": 500000,
+      "proposal_rate": 0.0,
+      "meeting_rate": 0.0
+    }
+  ],
+  "conclusions": [
+    {
+      "label": "Больше всего сделок CRM дает источник",
+      "name": "Лид не найден / не указан",
+      "value": 28
+    },
+    {
+      "label": "Больше всего сделок ведет менеджер",
+      "name": "Дарья",
+      "value": 80
+    },
+    {
+      "label": "Самая высокая конверсия во встречи",
+      "name": "Ирина",
+      "value": 6.5
     }
   ]
 };
 
-function dateFromPeriod(period) {
-  return `${period}-01`;
-}
-
-const managers = ["Клочкова Ирина", "Вероника Нам", "Дарья Тенькова"];
-
-const seedDeals = financeData.monthly.map((month, index) => ({
-  id: `${month.period}-balance`,
-  date: dateFromPeriod(month.period),
-  channel: "Реклама из баланса",
-  type: "Все мероприятия месяца",
-  manager: managers[index % managers.length],
-  status: "event",
-  leads: month.events_count,
-  marketing: Math.round(month.ad_spend || 0),
-  revenue: Math.round(month.revenue || 0),
-  costs: Math.max(0, Math.round((month.expenses || 0) - (month.ad_spend || 0)))
-}));
-
-const channels = Array.from(new Set(["Реклама из баланса", ...financeData.ad_lines.map((line) => line.name)])).slice(0, 80);
-const types = Array.from(new Set(["Все мероприятия месяца", ...financeData.events.map((event) => event.type)])).slice(0, 80);
-const statuses = [
-  ["lead", "Лид"],
-  ["hold", "Просмотр"],
-  ["booked", "Бронь"],
-  ["event", "Мероприятие"]
-];
-
-const state = {
-  deals: loadDeals(),
-  managerOverrides: loadManagerOverrides(),
-  manualAds: loadManualRows(MANUAL_AD_KEY),
-  manualFinance: loadManualRows(MANUAL_FINANCE_KEY),
-  view: "overview"
-};
-
 const money = new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 });
 const number = new Intl.NumberFormat("ru-RU");
+const percent = new Intl.NumberFormat("ru-RU", { style: "percent", maximumFractionDigits: 1 });
 
-function normalizeDeals(deals) {
-  const oldManagerMap = {
-    "Анна Смирнова": "Клочкова Ирина",
-    "Ирина Клочкова": "Клочкова Ирина",
-    "Иван Петров": "Дарья Тенькова",
-    "Мария Кузнецова": "Вероника Нам",
-    "Алексей Власов": "Клочкова Ирина"
-  };
-  return deals.map((deal, index) => ({
-    ...deal,
-    manager: managers.includes(deal.manager) ? deal.manager : oldManagerMap[deal.manager] || managers[index % managers.length]
-  }));
+function formatMoney(value) { return money.format(Math.round(Number(value || 0))); }
+function formatNumber(value) { return number.format(Math.round(Number(value || 0))); }
+function formatPercent(value) { return percent.format(Number(value || 0)); }
+function safeRate(part, total) { return total ? part / total : 0; }
+
+function key(label) {
+  return dashboardData.key_figures.find((item) => item.label === label)?.value || 0;
 }
 
-function loadManagerOverrides() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(MANAGER_OVERRIDES_KEY) || "{}");
-    return typeof parsed === "object" && parsed ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveManagerOverrides() {
-  localStorage.setItem(MANAGER_OVERRIDES_KEY, JSON.stringify(state.managerOverrides));
-}
-
-function loadManualRows(key) {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(key) || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveManualRows(key, rows) {
-  localStorage.setItem(key, JSON.stringify(rows));
-}
-
-function loadDeals() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return normalizeDeals(seedDeals);
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? normalizeDeals(parsed) : normalizeDeals(seedDeals);
-  } catch {
-    return normalizeDeals(seedDeals);
-  }
-}
-
-function saveDeals() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.deals));
-}
-
-function byDateRange(deal) {
-  const from = document.querySelector("#dateFrom").value;
-  const to = document.querySelector("#dateTo").value;
-  return (!from || deal.date >= from) && (!to || deal.date <= to);
-}
-
-function filteredDeals() {
-  return state.deals.filter(byDateRange);
-}
-
-function activeMonthly() {
-  const from = document.querySelector("#dateFrom").value;
-  const to = document.querySelector("#dateTo").value;
-  return financeData.monthly.filter((month) => {
-    const date = dateFromPeriod(month.period);
-    return (!from || date >= from) && (!to || date <= to);
-  });
-}
-
-function activeEvents() {
-  const from = document.querySelector("#dateFrom").value;
-  const to = document.querySelector("#dateTo").value;
-  return financeData.events.filter((event) => event.date && (!from || event.date >= from) && (!to || event.date <= to));
-}
-
-function activeAdLines() {
-  const periods = new Set(activeMonthly().map((month) => month.period));
-  return financeData.ad_lines.filter((line) => periods.has(line.period));
-}
-
-function activeAdBreakdown() {
-  const periods = new Set(activeMonthly().map((month) => month.period));
-  return (financeData.ad_breakdown || []).filter((line) => periods.has(line.period));
-}
-
-function daysInPeriod(period) {
-  const [year, month] = period.split("-").map(Number);
-  return new Date(year, month, 0).getDate();
-}
-
-function activeYears() {
-  return Array.from(new Set(activeMonthly().map((month) => month.year))).sort();
-}
-
-function activeEventTypes() {
-  const periods = new Set(activeMonthly().map((month) => month.period));
-  return financeData.event_types.filter((row) => periods.has(row.period));
-}
-
-function sum(items, key) {
-  return items.reduce((total, item) => total + Number(item[key] || 0), 0);
-}
-
-function romi(revenue, marketing) {
-  if (!marketing) return revenue ? 100 : 0;
-  return ((revenue - marketing) / marketing) * 100;
-}
-
-function profit(deals) {
-  return sum(deals, "revenue") - sum(deals, "marketing") - sum(deals, "costs");
-}
-
-function groupBy(items, key) {
-  return items.reduce((groups, item) => {
-    const value = typeof key === "function" ? key(item) : item[key];
-    groups[value] = groups[value] || [];
-    groups[value].push(item);
-    return groups;
-  }, {});
-}
-
-function statusLabel(status) {
-  return statuses.find(([value]) => value === status)?.[1] || status;
-}
-
-function pct(value) {
-  return `${Math.round(value)}%`;
-}
-
-function formatMoney(value) {
-  return money.format(Math.round(value)).replace(",00", "");
-}
-
-function setDefaultDates() {
-  document.querySelector("#dateFrom").value = "2026-01-01";
-  document.querySelector("#dateTo").value = "2026-05-31";
-}
-
-function applyPreset() {
-  const preset = document.querySelector("#periodPreset").value;
-  if (["2024", "2025", "2026"].includes(preset)) {
-    document.querySelector("#dateFrom").value = `${preset}-01-01`;
-    document.querySelector("#dateTo").value = preset === "2026" ? "2026-05-31" : `${preset}-12-31`;
-  }
-  if (preset === "month") {
-    document.querySelector("#dateFrom").value = "2026-05-01";
-    document.querySelector("#dateTo").value = "2026-05-31";
-  }
-  if (preset === "quarter") {
-    document.querySelector("#dateFrom").value = "2026-03-01";
-    document.querySelector("#dateTo").value = "2026-05-31";
-  }
-  if (preset === "all") {
-    document.querySelector("#dateFrom").value = "";
-    document.querySelector("#dateTo").value = "";
-  }
-  render();
-}
-
-function renderKpis(deals) {
-  const months = activeMonthly();
-  const revenue = sum(months, "revenue");
-  const marketing = sum(months, "ad_spend");
-  const events = sum(months, "events_count");
-  const totalProfit = sum(months, "profit");
-  const avgCheck = events ? revenue / events : 0;
+function renderKpis() {
+  const spend = key("Потратили всего");
+  const ctLeads = key("Лиды Calltouch всего");
+  const crmDeals = key("Сделки CRM без дублей");
+  const qualified = key("Квалифицированные лиды");
+  const inWork = key("Сделки в работе");
+  const budget = key("Потенциальный бюджет CRM");
   const items = [
-    ["ROMI", pct(romi(revenue, marketing)), `${months.length} мес.`, "↗", "green"],
-    ["Выручка", formatMoney(revenue), "по балансам", "▣", "violet"],
-    ["Прибыль", formatMoney(totalProfit), "прибыль/убыток", "▥", totalProfit < 0 ? "red" : "green"],
-    ["Расход на рекламу", formatMoney(marketing), "строка реклама", "⌁", "orange"],
-    ["Мероприятия", number.format(events), "листов мероприятий", "□", "blue"],
-    ["Средний чек", formatMoney(avgCheck), "выручка / события", "≡", "yellow"]
+    ["Расход", formatMoney(spend), "реклама за июнь", "₽", "orange"],
+    ["Лиды CT", formatNumber(ctLeads), "все входящие лиды", "◌", "blue"],
+    ["Сделки CRM", formatNumber(crmDeals), "без дублей", "▣", "violet"],
+    ["Квалификация", formatPercent(safeRate(qualified, crmDeals)), `${formatNumber(qualified)} квал.`, "✓", "green"],
+    ["В работе", formatNumber(inWork), "активные сделки", "▽", "yellow"],
+    ["Бюджет CRM", formatMoney(budget), "потенциал сделок", "▥", "green"]
   ];
-
   document.querySelector("#kpis").innerHTML = items.map(([title, value, trend, icon, tone], index) => `
     <article class="kpi">
-      <div class="kpi-top">
-        <span>${title}</span>
-        <span class="kpi-icon" style="background: var(--${tone}-soft); color: var(--${tone});">${icon}</span>
-      </div>
+      <div class="kpi-top"><span>${title}</span><span class="kpi-icon" style="background: var(--${tone}-soft); color: var(--${tone});">${icon}</span></div>
       <strong>${value}</strong>
       <span class="trend">${trend}</span>
       ${sparkline(index)}
@@ -1494,488 +2366,168 @@ function renderKpis(deals) {
 }
 
 function sparkline(offset) {
-  const values = [12, 19, 17, 25, 15, 29, 27, 35, 31, 24, 28, 38].map((value) => value + offset * 2);
-  const points = values.map((value, index) => `${index * 18},${35 - value * 0.65}`).join(" ");
-  return `<svg class="spark" viewBox="0 0 200 42" preserveAspectRatio="none"><polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
+  const values = [12, 18, 15, 24, 20, 31, 28, 36].map((value) => value + offset * 2);
+  const points = values.map((value, index) => `${index * 28},${42 - value}`).join(" ");
+  return `<svg class="spark" viewBox="0 0 200 46" preserveAspectRatio="none"><polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
 }
 
-function renderLineChart(deals) {
-  const months = activeMonthly().sort((a, b) => a.period.localeCompare(b.period));
-  if (!months.length) {
-    document.querySelector("#romiHint").textContent = "Нет данных";
-    document.querySelector("#romiChart").innerHTML = `<div class="empty-chart">Нет данных за выбранный период</div>`;
-    return;
-  }
-  const values = months.map((month) => romi(month.revenue, month.ad_spend));
-  const max = Math.ceil(Math.max(400, ...values) / 500) * 500;
-  const width = 820;
-  const height = 270;
-  const plot = { x: 54, y: 32, w: 710, h: 172 };
-  const labelStep = Math.max(1, Math.ceil(months.length / 12));
-  const pointLabelStep = Math.max(1, Math.ceil(months.length / 8));
-  const points = values.map((value, index) => {
-    const x = plot.x + (months.length === 1 ? plot.w / 2 : (plot.w / (months.length - 1)) * index);
-    const y = plot.y + plot.h - (value / max) * plot.h;
-    return { x, y, value, month: months[index].period };
-  });
-  const poly = points.map((point) => `${point.x},${point.y}`).join(" ");
-  const area = `${plot.x},${plot.y + plot.h} ${poly} ${plot.x + plot.w},${plot.y + plot.h}`;
-  const ticks = Array.from({ length: 5 }, (_, index) => Math.round((max / 4) * index));
-
-  document.querySelector("#romiHint").textContent = `${months.length} мес. в периоде`;
-  document.querySelector("#romiChart").innerHTML = `
-    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="ROMI по месяцам">
-      <defs>
-        <linearGradient id="lineFill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stop-color="#7257d8" stop-opacity="0.28"/>
-          <stop offset="1" stop-color="#7257d8" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      ${ticks.map((tick) => {
-        const y = plot.y + plot.h - (tick / max) * plot.h;
-        return `<line x1="${plot.x}" x2="${plot.x + plot.w}" y1="${y}" y2="${y}" stroke="#edf0f6"/><text x="8" y="${y + 4}" class="chart-label">${tick}%</text>`;
-      }).join("")}
-      <polygon points="${area}" fill="url(#lineFill)"/>
-      <polyline points="${poly}" fill="none" stroke="#7257d8" stroke-width="3"/>
-      ${points.map((point, index) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#fff" stroke="#7257d8" stroke-width="3"/>${index % pointLabelStep === 0 || index === points.length - 1 ? `<text x="${point.x}" y="${Math.max(16, point.y - 13)}" text-anchor="middle" class="chart-label value-label">${pct(point.value)}</text>` : ""}`).join("")}
-      ${points.map((point, index) => (index % labelStep === 0 || index === points.length - 1) ? `<text x="${point.x}" y="238" text-anchor="middle" class="chart-label month-label">${monthName(point.month)} ${point.month.slice(2, 4)}</text>` : "").join("")}
-    </svg>
-  `;
-}
-
-function monthName(key) {
-  const names = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
-  return names[Number(key.slice(5, 7)) - 1];
-}
-
-function renderFunnel(deals) {
-  const leads = sum(deals, "leads");
-  const holds = deals.filter((deal) => ["hold", "booked", "event"].includes(deal.status)).length * 16;
-  const booked = deals.filter((deal) => ["booked", "event"].includes(deal.status)).length;
-  const events = deals.filter((deal) => deal.status === "event").length;
-  const steps = [
-    ["Показы рекламы", leads * 420, 0],
-    ["Переходы", leads * 42, 10],
-    ["Заявки (лиды)", leads, leads ? 3.5 : 0],
-    ["Созвоны", Math.round(leads * 0.5), leads ? 50 : 0],
-    ["Просмотры площадки", holds, leads ? (holds / leads) * 100 : 0],
-    ["Предварительные брони", booked, holds ? (booked / holds) * 100 : 0],
-    ["Оплата (бронь)", events, booked ? (events / booked) * 100 : 0],
-    ["Мероприятия проведено", events, events ? 100 : 0]
-  ];
-  const max = Math.max(...steps.map((step) => step[1]), 1);
-  document.querySelector("#funnelChart").innerHTML = steps.map(([label, value, conversion]) => `
-    <div class="funnel-row">
-      <span>${label}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(2, (value / max) * 100)}%"></div></div>
-      <b>${number.format(value)}</b>
-      <span>${conversion ? `${conversion.toFixed(1)}%` : "—"}</span>
-    </div>
-  `).join("");
-}
-
-function renderChannelRows(deals) {
-  const rows = crmData.channels || [];
-  document.querySelector("#channelRows").innerHTML = rows
-    .slice(0, 18)
-    .map((row) => `
-      <tr>
-        <td>${row.channel}</td>
-        <td>${row.category || "—"}</td>
-        <td>${formatMoney(row.spend || 0)}</td>
-        <td>${number.format(row.crm_deals || 0)}</td>
-        <td>${number.format(row.in_work || 0)}</td>
-        <td>${number.format(row.closed || 0)}</td>
-        <td>${number.format(row.proposal || 0)}</td>
-        <td>${formatMoney(row.crm_budget || 0)}</td>
-        <td class="${row.romi === null ? "" : row.romi < 0 ? "negative" : "positive"}">${row.romi === null ? "без расхода" : pct(row.romi)}</td>
-      </tr>
-    `).join("");
-  renderCrmEfficiency();
-}
-
-function renderCrmEfficiency() {
-  const target = document.querySelector("#crmEfficiencyRows");
-  if (!target) return;
-  target.innerHTML = (crmData.efficiency || [])
-    .slice(0, 18)
-    .map((row) => `
-      <tr>
-        <td>${row.event_type}</td>
-        <td>${row.status}</td>
-        <td>${number.format(row.deals || 0)}</td>
-        <td>${formatMoney(row.revenue || 0)}</td>
-        <td>${formatMoney(row.costs || 0)}</td>
-        <td class="${row.romi === null ? "" : row.romi < 0 ? "negative" : "positive"}">${row.romi === null ? "без расхода" : pct(row.romi)}</td>
-      </tr>
-    `).join("");
-}
-
-function renderAdvertising() {
-  const years = new Set(activeYears());
-  const grouped = {};
-  (financeData.ad_breakdown || []).forEach((line) => {
-    if (years.size && !years.has(line.year)) return;
-    const key = `${line.year}__${line.vendor}`;
-    grouped[key] = grouped[key] || { year: line.year, vendor: line.vendor, months: Array(12).fill(0), total: 0 };
-    const monthIndex = Number(line.month || line.period?.slice(5, 7)) - 1;
-    if (monthIndex >= 0 && monthIndex < 12) grouped[key].months[monthIndex] += Number(line.amount || 0);
-    grouped[key].total += Number(line.amount || 0);
-  });
-  document.querySelector("#adYearRows").innerHTML = Object.values(grouped)
-    .sort((a, b) => a.year - b.year || b.total - a.total)
-    .map((row) => `
-      <tr>
-        <td>${row.year}</td>
-        <td>${row.vendor}</td>
-        ${row.months.map((value) => `<td>${value ? formatMoney(value) : "—"}</td>`).join("")}
-        <td>${formatMoney(row.total)}</td>
-      </tr>
-    `).join("") || `<tr><td colspan="15">За выбранный период рекламных расходов нет.</td></tr>`;
-}
-
-function renderAmortization() {
-  const yearlyRows = crmData.amortization_yearly || [];
-  document.querySelector("#amortizationRows").innerHTML = yearlyRows
-    .map((row) => `
-      <tr>
-        <td>${row.year}</td>
-        <td>${number.format(row.rows_count || 0)}</td>
-        <td>${formatMoney(row.amortization_amount || row.available_for_amortization || 0)}</td>
-        <td>${formatMoney(row.cumulative_amount || 0)}</td>
-      </tr>
-    `).join("");
-}
-
-function renderEventRows(deals) {
-  const grouped = groupBy(activeEventTypes(), "type");
-  document.querySelector("#eventRows").innerHTML = Object.entries(grouped)
-    .sort((a, b) => sum(b[1], "events_count") - sum(a[1], "events_count"))
-    .map(([type, rows]) => {
-      const revenue = sum(rows, "rent_revenue");
-      const totalProfit = sum(rows, "total_profit");
-      return `<tr><td>${type}</td><td>${number.format(sum(rows, "events_count"))}</td><td>${formatMoney(revenue)}</td><td class="${totalProfit < 0 ? "negative" : "positive"}">${formatMoney(totalProfit)}</td></tr>`;
-    }).join("");
-}
-
-function renderCalendar(deals) {
-  const events = activeEvents();
-  const bookedDates = new Set(events.map((event) => event.date));
-  const calendarMonth = (document.querySelector("#dateFrom").value || events[0]?.date || "2026-05-01").slice(0, 7);
-  const [year, month] = calendarMonth.split("-").map(Number);
-  const daysInMonth = new Date(year, month, 0).getDate();
-  const days = Array.from({ length: daysInMonth }, (_, index) => {
-    const day = index + 1;
-    const iso = `${calendarMonth}-${String(day).padStart(2, "0")}`;
-    const cls = bookedDates.has(iso) ? "booked" : "";
-    return `<div class="day ${cls}">${day}</div>`;
-  });
-  const occupancy = Math.round(([...bookedDates].filter((date) => date.startsWith(calendarMonth)).length / daysInMonth) * 100);
-  document.querySelector("#calendarGrid").innerHTML = days.join("");
-  document.querySelector("#occupancyLabel").textContent = `${calendarMonth} · Занятость ${occupancy}%`;
-  renderOccupancyRows();
-}
-
-function renderOccupancyRows() {
-  const rows = activeMonthly().sort((a, b) => a.period.localeCompare(b.period));
-  document.querySelector("#occupancyRows").innerHTML = rows.length ? rows.map((row) => {
-    const days = daysInPeriod(row.period);
-    const percent = days ? (row.events_count / days) * 100 : 0;
+function renderBarChart(selector, rows, config) {
+  const max = Math.max(1, ...rows.map((row) => Number(row[config.value] || 0)));
+  document.querySelector(selector).innerHTML = rows.map((row) => {
+    const value = Number(row[config.value] || 0);
+    const width = Math.max(3, (value / max) * 100);
+    const secondary = config.secondary ? Number(row[config.secondary] || 0) : null;
     return `
-      <tr>
-        <td>${row.year}</td>
-        <td>${monthName(row.period)}</td>
-        <td>${number.format(row.events_count)}</td>
-        <td>${number.format(days)}</td>
-        <td>${pct(percent)}</td>
-      </tr>
+      <div class="chart-row">
+        <div class="chart-name">${row[config.label]}</div>
+        <div class="chart-track"><div class="chart-fill" style="width:${width}%"></div></div>
+        <b>${config.format ? config.format(value) : formatNumber(value)}</b>
+        ${secondary === null ? "" : `<span>${config.secondaryLabel} ${formatNumber(secondary)}</span>`}
+      </div>
     `;
-  }).join("") : `<tr><td colspan="5">За выбранный период мероприятий нет.</td></tr>`;
+  }).join("");
 }
 
-function renderCac(deals) {
-  const months = activeMonthly();
-  const eventCount = sum(months, "events_count") || 1;
-  const marketing = sum(months, "ad_spend");
-  const leads = eventCount * 8;
-  const stages = [
-    ["Лид", leads],
-    ["Просмотр площадки", Math.max(1, Math.round(eventCount * 2.5))],
-    ["Бронь", Math.max(1, Math.round(eventCount * 1.25))],
-    ["Мероприятие", eventCount]
-  ];
-  document.querySelector("#cacList").innerHTML = stages.map(([label, count], index) => `
-    <div class="metric-row">
-      <span>${label}</span>
-      <b>${formatMoney(marketing / count)}</b>
-      ${miniLine(index)}
+function renderFunnel() {
+  const max = Math.max(1, ...dashboardData.funnel.map((row) => row.count));
+  document.querySelector("#funnelChart").innerHTML = dashboardData.funnel.map((row) => `
+    <div class="funnel-row">
+      <span>${row.stage}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(3, row.count / max * 100)}%"></div></div>
+      <b>${formatNumber(row.count)}</b>
+      <span>${formatPercent(row.share)}</span>
     </div>
   `).join("");
 }
 
-function miniLine(offset) {
-  const points = [8, 12, 10, 15, 9, 18, 14, 21, 17].map((v, i) => `${i * 12},${26 - v - offset}`).join(" ");
-  return `<svg class="mini-line" viewBox="0 0 100 28"><polyline points="${points}" fill="none" stroke="#9a87df" stroke-width="2"/></svg>`;
+function renderTopSources() {
+  document.querySelector("#topSourceRows").innerHTML = dashboardData.top_sources.map((row) => `
+    <tr>
+      <td>${row.source}</td>
+      <td>${formatNumber(row.ct_leads)}</td>
+      <td>${formatNumber(row.crm_deals)}</td>
+      <td>${formatNumber(row.qualified)}</td>
+      <td>${formatNumber(row.proposal)}</td>
+      <td>${formatNumber(row.meetings)}</td>
+      <td>${formatMoney(row.ct_revenue)}</td>
+      <td>${formatMoney(row.crm_budget)}</td>
+      <td>${row.spend ? formatMoney(row.spend) : "—"}</td>
+      <td>${row.decision}</td>
+    </tr>
+  `).join("");
 }
 
-function renderManagers(deals) {
-  const grouped = groupBy(deals, "manager");
-  document.querySelector("#managerRows").innerHTML = managers.map((manager) => {
-    const rows = grouped[manager] || [];
-    const bookings = rows.filter((deal) => ["booked", "event"].includes(deal.status)).length;
-    const override = state.managerOverrides[manager] || {};
-    const leadsValue = override.leads ?? sum(rows, "leads");
-    const bookingsValue = override.bookings ?? bookings;
+function renderChannels() {
+  document.querySelector("#channelRows").innerHTML = dashboardData.channels.map((row) => `
+    <tr>
+      <td>${row.group}</td>
+      <td>${row.source}</td>
+      <td>${row.touchpoint || "—"}</td>
+      <td>${row.spend ? formatMoney(row.spend) : "—"}</td>
+      <td>${formatNumber(row.ct_leads)}</td>
+      <td>${formatNumber(row.crm_deals)}</td>
+      <td>${formatNumber(row.qualified)}</td>
+      <td>${formatNumber(row.irina)}</td>
+      <td>${formatNumber(row.daria)}</td>
+      <td>${formatNumber(row.proposal)}</td>
+      <td>${formatNumber(row.meetings)}</td>
+      <td>${formatMoney(row.ct_revenue)}</td>
+      <td>${formatMoney(row.crm_budget)}</td>
+      <td>${row.cpl ? formatMoney(row.cpl) : "—"}</td>
+      <td>${row.decision || "—"}</td>
+    </tr>
+  `).join("");
+}
+
+function renderStages() {
+  document.querySelector("#stageRows").innerHTML = dashboardData.stages.map((row) => `
+    <tr>
+      <td>${row.stage}</td>
+      <td>${formatNumber(row.total)}</td>
+      <td>${formatNumber(row.irina)}</td>
+      <td>${formatNumber(row.daria)}</td>
+      <td>${formatNumber(row.other)}</td>
+      <td>${formatPercent(row.share)}</td>
+      <td>${formatMoney(row.budget)}</td>
+      <td>${row.comment}</td>
+    </tr>
+  `).join("");
+  document.querySelector("#sourceStageRows").innerHTML = dashboardData.source_stages.map((row) => `
+    <tr><td>${row.stage}</td><td>${formatNumber(row.count)}</td><td>${formatPercent(row.share)}</td><td>${formatMoney(row.budget)}</td></tr>
+  `).join("");
+}
+
+function renderManagers() {
+  const totalDeals = dashboardData.manager_summary.reduce((sum, row) => sum + row.deals, 0);
+  const managerByName = new Map(dashboardData.eff_managers.map((row) => [row.manager, row]));
+  document.querySelector("#managerRows").innerHTML = dashboardData.manager_summary.map((row) => {
+    const eff = managerByName.get(row.manager) || {};
     return `
       <tr>
-        <td>${manager}</td>
-        <td><input class="manager-edit" type="number" min="0" data-manager="${manager}" data-manager-field="leads" value="${leadsValue}"></td>
-        <td><input class="manager-edit" type="number" min="0" data-manager="${manager}" data-manager-field="bookings" value="${bookingsValue}"></td>
-        <td class="positive">${pct(romi(sum(rows, "revenue"), sum(rows, "marketing")))}</td>
+        <td>${row.manager}</td>
+        <td>${formatNumber(row.deals)}</td>
+        <td>${formatPercent(row.share || safeRate(row.deals, totalDeals))}</td>
+        <td>${formatNumber(row.qualified)}</td>
+        <td>${formatNumber(row.proposal)}</td>
+        <td>${formatNumber(row.meetings)}</td>
+        <td>${formatNumber(eff.in_work || 0)}</td>
+        <td>${formatMoney(row.budget)}</td>
+        <td>${formatPercent(eff.proposal_rate || safeRate(row.proposal, row.deals))}</td>
+        <td>${formatPercent(eff.meeting_rate || safeRate(row.meetings, row.deals))}</td>
       </tr>
     `;
   }).join("");
 }
 
-function renderFinance(deals) {
-  const months = activeMonthly();
-  const revenue = sum(months, "revenue");
-  const marketing = sum(months, "ad_spend");
-  const expenses = sum(months, "expenses");
-  const totalProfit = sum(months, "profit");
-  const percent = revenue ? Math.max(0, Math.min(100, (totalProfit / revenue) * 100)) : 0;
-  document.querySelector("#profitDonut").style.background = `conic-gradient(var(--violet) ${percent}%, #edf0f6 0)`;
-  document.querySelector("#profitDonut").innerHTML = `<div class="donut-label">Прибыль<b>${formatMoney(totalProfit)}</b>${pct(percent)}</div>`;
-  document.querySelector("#financeRows").innerHTML = [
-    ["Выручка", revenue],
-    ["Реклама", -marketing],
-    ["Расходы всего", -expenses],
-    ["Расходы без рекламы", -(expenses - marketing)],
-    ["Прибыль/убыток", totalProfit]
-  ].map(([label, value]) => `<div class="finance-row"><span>${label}</span><b>${formatMoney(value)}</b></div>`).join("");
-}
+function renderRegistry() {
+  const s = dashboardData.registry_summary;
+  document.querySelector("#registrySummary").innerHTML = [
+    ["Строк в реестре", formatNumber(s.rows)],
+    ["Квалифицировано", formatNumber(s.qualified)],
+    ["Бюджет CRM", formatMoney(s.budget)],
+    ["Оплачено", formatMoney(s.paid)],
+    ["Реализовано", formatNumber(s.realized)]
+  ].map(([label, value]) => `<div class="mini-card"><span>${label}</span><strong>${value}</strong></div>`).join("");
 
-function renderRepeatAndForecast(deals) {
-  const months = activeMonthly();
-  const eventCount = sum(months, "events_count");
-  const revenue = sum(months, "revenue");
-  const repeat = Math.round(eventCount * 0.28);
-  document.querySelector("#repeatBox").innerHTML = `
-    <div class="repeat-card"><span>Новые клиенты</span><strong>${Math.max(0, eventCount - repeat)}</strong><small>Расчетная доля</small></div>
-    <div class="repeat-card"><span>Повторные клиенты</span><strong>${repeat}</strong><small>LTV: ${formatMoney(revenue / Math.max(1, eventCount) * 1.7)}</small></div>
-  `;
-
-  const booked = eventCount;
-  const expectedEvents = Math.round(eventCount * 1.08);
-  const expectedRevenue = expectedEvents * (revenue / Math.max(1, eventCount));
-  const rows = [
-    ["Подтвержденные мероприятия", eventCount, 70],
-    ["Расчетный план +8%", expectedEvents, 48],
-    ["Месяцев в выборке", months.length, 62],
-    ["Ожидаемая выручка", formatMoney(expectedRevenue), 78]
-  ];
-  document.querySelector("#forecastBox").innerHTML = rows.map(([label, value, width]) => `
-    <div class="forecast-row"><span>${label}</span><div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div><b>${value}</b></div>
-  `).join("") + `<b>Прогноз уточняется после подключения календаря и CRM-выгрузок</b>`;
-}
-
-function renderEditor() {
-  document.querySelector("#dealEditor").innerHTML = state.deals.map((deal) => `
-    <tr data-id="${deal.id}">
-      <td><input type="date" data-field="date" value="${deal.date}"></td>
-      <td>${select("channel", channels, deal.channel)}</td>
-      <td>${select("type", types, deal.type)}</td>
-      <td>${select("manager", managers, deal.manager)}</td>
-      <td>${select("status", statuses.map(([, label]) => label), statusLabel(deal.status), statuses.map(([value]) => value))}</td>
-      <td><input type="number" min="0" data-field="leads" value="${deal.leads}"></td>
-      <td><input type="number" min="0" data-field="marketing" value="${deal.marketing}"></td>
-      <td><input type="number" min="0" data-field="revenue" value="${deal.revenue}"></td>
-      <td><input type="number" min="0" data-field="costs" value="${deal.costs}"></td>
-      <td><button class="delete-row" data-delete="${deal.id}">×</button></td>
-    </tr>
+  document.querySelector("#registrySourceRows").innerHTML = s.by_source.slice(0, 18).map((row) => `
+    <tr><td>${row.source}</td><td>${formatNumber(row.deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatMoney(row.budget)}</td><td>${formatMoney(row.paid)}</td><td>${formatNumber(row.realized)}</td></tr>
+  `).join("");
+  document.querySelector("#touchpointRows").innerHTML = s.by_touchpoint.map((row) => `
+    <tr><td>${row.touchpoint}</td><td>${formatNumber(row.deals)}</td><td>${formatNumber(row.qualified)}</td><td>${formatMoney(row.budget)}</td></tr>
   `).join("");
 }
 
-function renderManualTables() {
-  document.querySelector("#manualAdRows").innerHTML = renderManualRows(state.manualAds, "ad");
-  document.querySelector("#manualFinanceRows").innerHTML = renderManualRows(state.manualFinance, "finance");
-}
-
-function renderManualRows(rows, type) {
-  const fields = type === "ad"
-    ? ["period", "source", "spend", "leads", "deals", "revenue", "comment"]
-    : ["period", "revenue", "expenses", "profit", "amortization", "comment"];
-  return rows.map((row) => `
-    <tr data-id="${row.id}">
-      ${fields.map((field) => `
-        <td><input data-manual="${type}" data-field="${field}" value="${row[field] ?? ""}" ${["spend", "leads", "deals", "revenue", "expenses", "profit", "amortization"].includes(field) ? 'type="number"' : 'type="text"'}></td>
-      `).join("")}
-      <td><button class="delete-row" data-manual-delete="${type}" data-delete="${row.id}">×</button></td>
-    </tr>
+function renderConclusions() {
+  document.querySelector("#conclusions").innerHTML = dashboardData.conclusions.map((row) => `
+    <div class="decision"><b>${row.label}</b><strong>${row.name}</strong><span>${typeof row.value === "number" ? formatNumber(row.value) : row.value}</span></div>
   `).join("");
 }
 
-function select(field, labels, selectedLabel, values = labels) {
-  return `<select data-field="${field}">${labels.map((label, index) => `<option value="${values[index]}" ${label === selectedLabel || values[index] === selectedLabel ? "selected" : ""}>${label}</option>`).join("")}</select>`;
-}
-
-function render(includeEditor = true) {
-  const deals = filteredDeals();
-  renderKpis(deals);
-  renderLineChart(deals);
-  renderFunnel(deals);
-  renderChannelRows(deals);
-  renderEventRows(deals);
-  renderCalendar(deals);
-  renderCac(deals);
-  renderManagers(deals);
-  renderFinance(deals);
-  renderRepeatAndForecast(deals);
-  renderAdvertising();
-  renderAmortization();
-  if (includeEditor) renderEditor();
-  if (includeEditor) renderManualTables();
-}
-
-function wireEvents() {
-  document.querySelector("#periodPreset").addEventListener("change", applyPreset);
-  document.querySelector("#dateFrom").addEventListener("change", render);
-  document.querySelector("#dateTo").addEventListener("change", render);
-  document.querySelector("#addDeal").addEventListener("click", () => {
-    state.deals.unshift({
-      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-      date: new Date().toISOString().slice(0, 10),
-      channel: channels[0],
-      type: types[0],
-      manager: managers[0],
-      status: "lead",
-      leads: 1,
-      marketing: 0,
-      revenue: 0,
-      costs: 0
-    });
-    saveDeals();
-    render();
-  });
-  document.querySelector("#addManualAd").addEventListener("click", () => addManualRow("ad"));
-  document.querySelector("#addManualFinance").addEventListener("click", () => addManualRow("finance"));
-  document.querySelector("#dealEditor").addEventListener("input", updateDeal);
-  document.querySelector("#dealEditor").addEventListener("change", updateDeal);
-  document.querySelector("#manualAdRows").addEventListener("input", updateManualRow);
-  document.querySelector("#manualFinanceRows").addEventListener("input", updateManualRow);
-  document.querySelector("#manualAdRows").addEventListener("click", deleteManualRow);
-  document.querySelector("#manualFinanceRows").addEventListener("click", deleteManualRow);
-  document.querySelector("#managerRows").addEventListener("input", updateManagerOverride);
-  document.querySelector("#dealEditor").addEventListener("click", (event) => {
-    const id = event.target.dataset.delete;
-    if (!id) return;
-    state.deals = state.deals.filter((deal) => deal.id !== id);
-    saveDeals();
-    render();
-  });
-  document.querySelector("#resetData").addEventListener("click", () => {
-    state.deals = seedDeals.map((deal) => ({ ...deal, id: crypto.randomUUID ? crypto.randomUUID() : String(Math.random()) }));
-    saveDeals();
-    setDefaultDates();
-    render();
-  });
-  document.querySelector("#exportJson").addEventListener("click", exportJson);
-  document.querySelector("#importJson").addEventListener("change", importJson);
+function wireNavigation() {
   document.querySelectorAll(".nav-item").forEach((button) => {
     button.addEventListener("click", () => {
-      state.view = button.dataset.view;
-      document.body.className = state.view === "overview" ? "" : `view-${state.view}`;
+      document.body.className = button.dataset.view === "overview" ? "" : `view-${button.dataset.view}`;
       document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("active", item === button));
     });
   });
 }
 
-function addManualRow(type) {
-  const rows = type === "ad" ? state.manualAds : state.manualFinance;
-  const row = type === "ad"
-    ? { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), period: "2026-06", source: "", spend: 0, leads: 0, deals: 0, revenue: 0, comment: "" }
-    : { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), period: "2026-06", revenue: 0, expenses: 0, profit: 0, amortization: 0, comment: "" };
-  rows.unshift(row);
-  saveManualRows(type === "ad" ? MANUAL_AD_KEY : MANUAL_FINANCE_KEY, rows);
-  renderManualTables();
+function render() {
+  document.querySelector("#sourceNote").textContent = `Источник: ${dashboardData.source_file} · вкладки: ${dashboardData.sheets_used.join(", ")}`;
+  renderKpis();
+  renderFunnel();
+  renderTopSources();
+  renderChannels();
+  renderStages();
+  renderManagers();
+  renderRegistry();
+  renderConclusions();
+  renderBarChart("#channelChart", dashboardData.eff_channels, { label: "source", value: "crm_deals", secondary: "qualified", secondaryLabel: "квал.", format: formatNumber });
+  renderBarChart("#stageChart", dashboardData.stages.filter((row) => row.total > 0), { label: "stage", value: "total", secondary: "budget", secondaryLabel: "бюджет", format: formatNumber });
+  renderBarChart("#managerChart", dashboardData.eff_managers, { label: "manager", value: "crm_deals", secondary: "proposal", secondaryLabel: "КП", format: formatNumber });
 }
 
-function updateManualRow(event) {
-  const type = event.target.dataset.manual;
-  const field = event.target.dataset.field;
-  if (!type || !field) return;
-  const rows = type === "ad" ? state.manualAds : state.manualFinance;
-  const row = rows.find((item) => item.id === event.target.closest("tr").dataset.id);
-  if (!row) return;
-  const numeric = ["spend", "leads", "deals", "revenue", "expenses", "profit", "amortization"].includes(field);
-  row[field] = numeric ? Number(event.target.value || 0) : event.target.value;
-  saveManualRows(type === "ad" ? MANUAL_AD_KEY : MANUAL_FINANCE_KEY, rows);
-}
-
-function deleteManualRow(event) {
-  const type = event.target.dataset.manualDelete;
-  const id = event.target.dataset.delete;
-  if (!type || !id) return;
-  if (type === "ad") {
-    state.manualAds = state.manualAds.filter((row) => row.id !== id);
-    saveManualRows(MANUAL_AD_KEY, state.manualAds);
-  } else {
-    state.manualFinance = state.manualFinance.filter((row) => row.id !== id);
-    saveManualRows(MANUAL_FINANCE_KEY, state.manualFinance);
-  }
-  renderManualTables();
-}
-
-function updateManagerOverride(event) {
-  const manager = event.target.dataset.manager;
-  const field = event.target.dataset.managerField;
-  if (!manager || !field) return;
-  state.managerOverrides[manager] = state.managerOverrides[manager] || {};
-  state.managerOverrides[manager][field] = Number(event.target.value || 0);
-  saveManagerOverrides();
-}
-
-function updateDeal(event) {
-  const field = event.target.dataset.field;
-  if (!field) return;
-  const row = event.target.closest("tr");
-  const deal = state.deals.find((item) => item.id === row.dataset.id);
-  if (!deal) return;
-  const numeric = ["leads", "marketing", "revenue", "costs"].includes(field);
-  deal[field] = numeric ? Number(event.target.value) : event.target.value;
-  saveDeals();
-  render(false);
-}
-
-function exportJson() {
-  const blob = new Blob([JSON.stringify(state.deals, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "archiloft-dashboard-data.json";
-  link.click();
-  URL.revokeObjectURL(link.href);
-}
-
-function importJson(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const imported = JSON.parse(reader.result);
-      if (!Array.isArray(imported)) throw new Error("Нужен массив строк");
-      state.deals = normalizeDeals(imported.map((deal) => ({ ...deal, id: deal.id || (crypto.randomUUID ? crypto.randomUUID() : String(Math.random())) })));
-      saveDeals();
-      render();
-    } catch {
-      alert("Не удалось импортировать файл. Проверьте формат JSON.");
-    }
-  };
-  reader.readAsText(file);
-}
-
-setDefaultDates();
-wireEvents();
+wireNavigation();
 render();
 
     </script>
